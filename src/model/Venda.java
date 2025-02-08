@@ -1,102 +1,92 @@
 package src.model;
 
-import java.util.Date;
+import src.model.interfaces.CodigoGenerator;
+
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Venda {
-    private int codigo;
-    private double subtotal;
-    private double desconto;
-    private Date data;
-    private int codFuncionario;
-    private String cpfCliente;
-    private int notaVenda;
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
-    // Construtor
-    public Venda(int codigo, double subtotal, double desconto, Date data, int codFuncionario, String cpfCliente, int notaVenda) {
-        this.codigo = codigo;
-        this.subtotal = subtotal;
-        this.desconto = desconto;
-        this.data = data;
-        this.codFuncionario = codFuncionario;
-        this.cpfCliente = cpfCliente;
-        this.notaVenda = notaVenda;
+public class Venda implements Serializable {
+
+    private final String codigo;
+    private Map<String, Item_produto> itens;
+    private LocalDateTime dataHora;
+
+    static private final long serialVersionUID = 1L;
+
+    public Venda(CodigoGenerator adapter){
+        this.codigo = adapter.gerarCodigo();
+        itens = new HashMap<>();
+        dataHora = LocalDateTime.now();
     }
 
-    // Getters and Setters
-    public int getCodigo() {
+    public double getTotal(){
+        double total = 0;
+        for (Item_produto item : this.itens.values()){
+            total += item.getSubtotal();
+        }
+        return total;
+    }
+
+    public void adicionarItem(Item_produto item){
+        this.itens.put(item.getCodigo(), item);
+    }
+
+    public Item_produto itemExist(String codigoProduto){
+        Item_produto item = null;
+
+        for (Map.Entry<String, Item_produto> entry : this.itens.entrySet()){
+            if (entry.getValue().getProduto().getCodigo().equals(codigoProduto)){
+                item = entry.getValue();
+            }
+        }
+        return item;
+
+    }
+
+    public boolean removerItem(String codigoItem){
+        if (this.itens.get(codigoItem) != null){
+            this.itens.remove(codigoItem);
+            return true;
+        }
+        return false;
+    }
+
+    public Collection<Item_produto> getItens(){
+        return this.itens.values();
+    }
+
+    public LocalDateTime getDataHora() {
+        return dataHora;
+    }
+
+    public String getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(int codigo) {
-        this.codigo = codigo;
-    }
-
-    public double getSubtotal() {
-        return subtotal;
-    }
-
-    public void setSubtotal(double subtotal) {
-        this.subtotal = subtotal;
-    }
-
-    public double getDesconto() {
-        return desconto;
-    }
-
-    public void setDesconto(double desconto) {
-        this.desconto = desconto;
-    }
-
-    public Date getData() {
-        return data;
-    }
-
-    public void setData(Date data) {
-        this.data = data;
-    }
-
-    public int getCodFuncionario() {
-        return codFuncionario;
-    }
-
-    public void setCodFuncionario(int codFuncionario) {
-        this.codFuncionario = codFuncionario;
-    }
-
-    public String getCpfCliente() {
-        return cpfCliente;
-    }
-
-    public void setCpfCliente(String cpfCliente) {
-        this.cpfCliente = cpfCliente;
-    }
-
-    public int getNotaVenda() {
-        return notaVenda;
-    }
-
-    public void setNotaVenda(int notaVenda) {
-        this.notaVenda = notaVenda;
-    }
-
-    // toString, equals, hashCode
     @Override
     public String toString() {
-        return "Venda{" + "codigo=" + codigo + ", subtotal=" + subtotal + '}';
+        return "Venda{" +
+                "codigo='" + codigo + '\'' +
+                ", itens=" + itens +
+                ", dataHora=" + dataHora +
+                '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Venda venda = (Venda) o;
-        return codigo == venda.codigo;
+        return Objects.equals(codigo, venda.codigo);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(codigo);
+        return Objects.hashCode(codigo);
     }
 }
 

@@ -35,7 +35,7 @@ public class Item_produto implements Serializable {
     }
 
     public void setQuantidade(double quantidade) {
-        this.quantidade += quantidade;
+        this.quantidade = quantidade;
     }
 
     public double getSubtotal(){
