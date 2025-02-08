@@ -20,7 +20,7 @@ public class ProdutoDao {
                 throw new RuntimeException(e);
             }
         }
-        this.produtos = getProdutos();
+        this.produtos = new HashMap<>(getProdutos());
     }
 
     public boolean adicionarProduto(Produto produto) throws IOException {
