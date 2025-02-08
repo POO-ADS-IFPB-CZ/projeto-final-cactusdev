@@ -1,29 +1,30 @@
 package src.model;
 
+import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Objects;
 
-public class Cliente {
-    private String cpf;
-    private String nome;
-    private String telefone;
-    private Date dataCadastro;
+public class Cliente implements Serializable {
+    private final String cpf;
+    private String nome, telefone;
+    private LocalDate dataCadastro;
+    private Boolean ativo;
+
+    static private final long serialVersionUID = 1L;
 
     // Construtor
-    public Cliente(String cpf, String nome, String telefone, Date dataCadastro) {
+    public Cliente(String cpf, String nome, String telefone) {
         this.cpf = cpf;
         this.nome = nome;
         this.telefone = telefone;
-        this.dataCadastro = dataCadastro;
+        this.dataCadastro = LocalDate.now();
+        this.ativo = true;
     }
 
     // Getters and Setters
     public String getCpf() {
         return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
     }
 
     public String getNome() {
@@ -42,12 +43,20 @@ public class Cliente {
         this.telefone = telefone;
     }
 
-    public Date getDataCadastro() {
+    public LocalDate getDataCadastro() {
         return dataCadastro;
     }
 
-    public void setDataCadastro(Date dataCadastro) {
+    public void setDataCadastro(LocalDate dataCadastro) {
         this.dataCadastro = dataCadastro;
+    }
+
+    public Boolean getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
     }
 
     // toString, equals, hashCode

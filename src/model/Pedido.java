@@ -1,88 +1,95 @@
 package src.model;
 
+import src.model.interfaces.CodigoGenerator;
+
+import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Date;
 
-public class Pedido {
-    private int codigo;
-    private Date data;
-    private double subtotal;
-    private String status;
-    private int idFornecedor;
+public class Pedido implements Serializable {
+    private final String codigo;
+    private LocalDate data;
+    private int quantidade
+    private Produto produto;
+    private Fornecedor fornecedor;
+
+    static private final long serialVersionUID = 1L;
 
     // Construtor
-    public Pedido(int codigo, Date data, double subtotal, String status, int idFornecedor) {
-        this.codigo = codigo;
-        this.data = data;
-        this.subtotal = subtotal;
-        this.status = status;
-        this.idFornecedor = idFornecedor;
+    public Pedido(CodigoGenerator adapter, int quantidade, Produto produto, Fornecedor fornecedor) {
+        this.codigo = adapter.gerarCodigo();
+        this.quantidade = quantidade;
+        this.data = LocalDate.now();
+        this.produto = produto;
+        this.fornecedor = fornecedor;
     }
 
     // Getters e Setters
-    public int getCodigo() {
+    public String getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(int codigo) {
-        this.codigo = codigo;
+    public Produto getProduto() {
+        return produto;
     }
 
-    public Date getData() {
+    public void setProduto(Produto produto) {
+        this.produto = produto;
+    }
+
+    public LocalDate getData() {
         return data;
     }
 
-    public void setData(Date data) {
+    public void setData(LocalDate data) {
         this.data = data;
     }
 
     public double getSubtotal() {
-        return subtotal;
+        return produto.getPreco() * quantidade;
     }
 
-    public void setSubtotal(double subtotal) {
-        this.subtotal = subtotal;
+    public Fornecedor getFornecedor() {
+        return fornecedor;
     }
 
-    public String getStatus() {
-        return status;
+    public void setFornecedor(Fornecedor fornecedor) {
+        this.fornecedor = fornecedor;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public int getQuantidade() {
+        return quantidade;
     }
 
-    public int getIdFornecedor() {
-        return idFornecedor;
-    }
-
-    public void setIdFornecedor(int idFornecedor) {
-        this.idFornecedor = idFornecedor;
+    public void setQuantidade(int quantidade) {
+        this.quantidade = quantidade;
     }
 
     // toString, equals, hashCode
+
+
     @Override
     public String toString() {
         return "Pedido{" +
-                "codigo=" + codigo +
+                "codigo='" + codigo + '\'' +
                 ", data=" + data +
-                ", subtotal=" + subtotal +
-                ", status='" + status + '\'' +
-                ", idFornecedor=" + idFornecedor +
+                ", quantidade=" + quantidade +
+                ", produto=" + produto +
+                ", fornecedor=" + fornecedor +
                 '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Pedido pedido = (Pedido) o;
-        return codigo == pedido.codigo;
+        return Objects.equals(codigo, pedido.codigo);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(codigo);
+        return Objects.hashCode(codigo);
     }
 }
 

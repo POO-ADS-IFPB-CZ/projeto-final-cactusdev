@@ -1,22 +1,20 @@
 package src.model;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class Fornecedor implements Serializable {
     private final String cnpj;
     private String nome,endereco,telefone;
-    private Set<Produto> produtos;
+    private Map<String,Produto> produtos;
     private static final long serialVersionUID = 1L;
 
-    public Fornecedor(String cnpj, String nome, String endereco, String telefone, Set<Produto> produtos){
+    public Fornecedor(String cnpj, String nome, String endereco, String telefone, Map<String,Produto> produtos){
         this.cnpj = cnpj;
         this.nome = nome;
         this.endereco = endereco;
         this.telefone = telefone;
-        this.produtos = new HashSet<>(produtos);
+        this.produtos = new HashMap<>(produtos);
     }
 
     public String getCnpj() {
@@ -39,11 +37,11 @@ public class Fornecedor implements Serializable {
         this.endereco = endereco;
     }
 
-    public Set<Produto> getProdutos() {
+    public Map<String,Produto> getProdutos() {
         return produtos;
     }
 
-    public void setProdutos(Set<Produto> produtos) {
+    public void setProdutos(Map<String,Produto> produtos) {
         this.produtos = produtos;
     }
 
