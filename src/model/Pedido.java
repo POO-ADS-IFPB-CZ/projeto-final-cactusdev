@@ -10,7 +10,7 @@ import java.util.Date;
 public class Pedido implements Serializable {
     private final String codigo;
     private LocalDate data;
-    private int quantidade
+    private int quantidade;
     private Produto produto;
     private Fornecedor fornecedor;
 
