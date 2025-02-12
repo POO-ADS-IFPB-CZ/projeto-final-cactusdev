@@ -7,13 +7,14 @@ public class ClienteModal {
 
     public static void abrirClienteModal() {
         // Criação do painel principal
-        JPanel panel = new JPanel(new GridLayout(4, 2, 10, 10));
+        JPanel panel = new JPanel(new GridLayout(6, 2, 10, 10));
 
         // Definir cores
-        Color corFundo = new Color(0xF4F4F4); // Um tom claro para o fundo
-        Color corBotoes = new Color(0x5C6BC0); // Tom de azul para os botões
-        Color corTexto = new Color(0x000000); // Cor preta para o texto (opcional)
-        Color corCampo = new Color(0xFFFFFF); // Cor branca para os campos de texto
+        Color corFundo = new Color(0xF4F4F4); // Tom claro para o fundo
+        Color corTexto = new Color(0x000000); // Cor preta para o texto
+        Color corCampo = new Color(0xFFFFFF); // Branco para os campos de texto
+        Color corAzul = new Color(-15713818);  // Azul para o botão OK
+        Color corVermelho = new Color(0xDC3545); // Vermelho para o botão Cancelar
 
         // Configurar o layout e a cor de fundo do painel
         panel.setBackground(corFundo);
@@ -35,18 +36,20 @@ public class ClienteModal {
                 "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"};
         JComboBox<String> estadoBox = new JComboBox<>(estados);
 
-        // Definir os rótulos
+        // Criar rótulos
         JLabel nomeLabel = new JLabel("Nome:");
-        nomeLabel.setForeground(corTexto);
         JLabel dataCadastroLabel = new JLabel("Data Cadastro:");
-        dataCadastroLabel.setForeground(corTexto);
         JLabel cpfLabel = new JLabel("CPF:");
-        cpfLabel.setForeground(corTexto);
         JLabel telefoneLabel = new JLabel("Telefone:");
-        telefoneLabel.setForeground(corTexto);
         JLabel cidadeLabel = new JLabel("Cidade:");
-        cidadeLabel.setForeground(corTexto);
         JLabel estadoLabel = new JLabel("Estado:");
+
+        // Aplicar cor ao texto dos rótulos
+        nomeLabel.setForeground(corTexto);
+        dataCadastroLabel.setForeground(corTexto);
+        cpfLabel.setForeground(corTexto);
+        telefoneLabel.setForeground(corTexto);
+        cidadeLabel.setForeground(corTexto);
         estadoLabel.setForeground(corTexto);
 
         // Adicionar os componentes ao painel
@@ -63,17 +66,32 @@ public class ClienteModal {
         panel.add(estadoLabel);
         panel.add(estadoBox);
 
-        // Criar o botão de confirmação
-        JButton confirmarButton = new JButton("Confirmar");
-        confirmarButton.setBackground(corBotoes);
-        confirmarButton.setForeground(Color.WHITE);
-        panel.add(confirmarButton);
+        // Criar botões personalizados
+        JButton okButton = new JButton("OK");
+        okButton.setBackground(corAzul);
+        okButton.setForeground(Color.WHITE);
 
-        // Exibir o modal
-        int result = JOptionPane.showConfirmDialog(null, panel, "Cadastro de Cliente",
-                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        JButton cancelButton = new JButton("Cancelar");
+        cancelButton.setBackground(corVermelho);
+        cancelButton.setForeground(Color.WHITE);
 
-        if (result == JOptionPane.OK_OPTION) {
+        // Criar array com os botões personalizados
+        Object[] options = {okButton, cancelButton};
+
+        // Exibir o JOptionPane com os botões personalizados
+        int result = JOptionPane.showOptionDialog(
+                null,
+                panel,
+                "Cadastro de Cliente",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                options,
+                options[0] // Define "OK" como botão padrão
+        );
+
+        // Verifica se o usuário clicou em "OK" (índice 0)
+        if (result == 0) {
             String nome = nomeField.getText();
             String dataCadastro = dataCadastroField.getText();
             String cpf = cpfField.getText();
