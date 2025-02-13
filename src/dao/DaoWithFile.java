@@ -1,5 +1,6 @@
 package src.dao;
 
+import javax.swing.*;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,42 +15,39 @@ public class DaoWithFile<T, ID> implements Dao<T,ID>{
         if(!arquivo.exists()){
             arquivo.createNewFile();
         }
-
-        Map<ID, T> itensLidos = getItensList();
-        this.list = (itensLidos != null) ? itensLidos : new HashMap<>();
+        this.list = getItensList();
     }
 
     @Override
-    public void addToList(ID codigo, T item) throws IOException{
+    public void addToList(ID codigo, T item) throws IOException, Error{
         if (list.containsKey(codigo)){
-            return;
+            throw new Error();
         }
         list.put(codigo, item);
         saveFile();
     }
 
     @Override
-    public boolean removeToList(ID codigo) throws IOException{
+    public void removeToList(ID codigo) throws IOException, Error{
         if (list.containsKey(codigo)){
             list.remove(codigo);
             saveFile();
-            return true;
+            return;
         }
-        return false;
+        throw new Error();
     }
 
     @Override
-    public boolean updateItemOnList(ID codigo, T item) throws IOException{
+    public void updateItemOnList(ID codigo, T item) throws IOException, Error{
         if(list.containsKey(codigo)){
             list.put(codigo, item);
             saveFile();
-            return  true;
+
         }
-        return false;
+        throw new Error();
     }
 
-    @Override
-    public Map<ID, T> getItensList() throws IOException, ClassNotFoundException {
+    private Map<ID, T> getItensList() throws IOException, ClassNotFoundException {
         if (arquivo.length() == 0) {
             return new HashMap<>();
         }
@@ -71,4 +69,10 @@ public class DaoWithFile<T, ID> implements Dao<T,ID>{
             out.writeObject(list);
         }
     }
+
+    @Override
+    public Map<ID, T> getList() {
+        return list;
+    }
+
 }
