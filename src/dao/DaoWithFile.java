@@ -1,5 +1,7 @@
 package src.dao;
 
+import src.controller.CustomError;
+
 import javax.swing.*;
 import java.io.*;
 import java.util.HashMap;
@@ -19,32 +21,32 @@ public class DaoWithFile<T, ID> implements Dao<T,ID>{
     }
 
     @Override
-    public void addToList(ID codigo, T item) throws IOException, Error{
+    public void addToList(ID codigo, T item) throws IOException, CustomError{
         if (list.containsKey(codigo)){
-            throw new Error();
+            throw new CustomError();
         }
         list.put(codigo, item);
         saveFile();
     }
 
     @Override
-    public void removeToList(ID codigo) throws IOException, Error{
+    public void removeToList(ID codigo) throws IOException, CustomError{
         if (list.containsKey(codigo)){
             list.remove(codigo);
             saveFile();
             return;
         }
-        throw new Error();
+        throw new CustomError();
     }
 
     @Override
-    public void updateItemOnList(ID codigo, T item) throws IOException, Error{
+    public void updateItemOnList(ID codigo, T item) throws IOException, CustomError {
         if(list.containsKey(codigo)){
             list.put(codigo, item);
             saveFile();
 
         }
-        throw new Error();
+        throw new CustomError();
     }
 
     private Map<ID, T> getItensList() throws IOException, ClassNotFoundException {

@@ -15,6 +15,7 @@ public class Venda implements Serializable {
     private final String codigo;
     private Map<String, Item_produto> itens;
     private LocalDateTime dataHora;
+    private MetodoPagamento metodoPagamento;
 
     static private final long serialVersionUID = 1L;
 
@@ -87,6 +88,14 @@ public class Venda implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hashCode(codigo);
+    }
+
+    public MetodoPagamento getMetodoPagamento() {
+        return metodoPagamento;
+    }
+
+    public void setMetodoPagamento(MetodoPagamento metodoPagamento) {
+        this.metodoPagamento = metodoPagamento;
     }
 }
 

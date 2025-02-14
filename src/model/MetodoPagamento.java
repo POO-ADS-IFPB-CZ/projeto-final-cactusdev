@@ -1,11 +1,14 @@
 package src.model;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class MetodoPagamento {
+public class MetodoPagamento implements Serializable {
     private int id;
     private String tipo;
     private boolean ativo;
+
+    static private final long serialVersionUID = 1L;
 
     // Construtor
     public MetodoPagamento(int id, String tipo, boolean ativo) {
