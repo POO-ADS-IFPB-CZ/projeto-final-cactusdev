@@ -1,26 +1,26 @@
 package src.model;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class Fornecedor implements Serializable {
-    private final String cnpj;
+    private final String cnpj_cpf;
+    private String tipo;
     private String nome,endereco,telefone;
-    private Set<Produto> produtos;
+    private Map<String,Produto> produtos;
     private static final long serialVersionUID = 1L;
 
-    public Fornecedor(String cnpj, String nome, String endereco, String telefone, Set<Produto> produtos){
-        this.cnpj = cnpj;
+    public Fornecedor(String cnpj_cpf, String tipo, String nome, String endereco, String telefone, Map<String,Produto> produtos){
+        this.cnpj_cpf = cnpj_cpf;
+        this.tipo = tipo;
         this.nome = nome;
         this.endereco = endereco;
         this.telefone = telefone;
-        this.produtos = new HashSet<>(produtos);
+        this.produtos = new HashMap<>(produtos);
     }
 
     public String getCnpj() {
-        return cnpj;
+        return cnpj_cpf;
     }
 
     public String getNome() {
@@ -39,11 +39,11 @@ public class Fornecedor implements Serializable {
         this.endereco = endereco;
     }
 
-    public Set<Produto> getProdutos() {
+    public Map<String,Produto> getProdutos() {
         return produtos;
     }
 
-    public void setProdutos(Set<Produto> produtos) {
+    public void setProdutos(Map<String,Produto> produtos) {
         this.produtos = produtos;
     }
 
@@ -58,25 +58,32 @@ public class Fornecedor implements Serializable {
     @Override
     public String toString() {
         return "Fornecedor{" +
-                "cnpj='" + cnpj + '\'' +
+                "cnpj_cpf='" + cnpj_cpf + '\'' +
+                ", tipo='" + tipo + '\'' +
                 ", nome='" + nome + '\'' +
                 ", endereco='" + endereco + '\'' +
+                ", telefone='" + telefone + '\'' +
                 ", produtos=" + produtos +
                 '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Fornecedor that = (Fornecedor) o;
-        return Objects.equals(cnpj, that.cnpj);
+        return Objects.equals(cnpj_cpf, that.cnpj_cpf);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(cnpj);
+        return Objects.hashCode(cnpj_cpf);
     }
 
+    public String getTipo() {
+        return tipo;
+    }
 
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
 }
