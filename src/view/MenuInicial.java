@@ -38,6 +38,14 @@ public class MenuInicial extends JFrame {
             }
         });
 
+        // Abre o modal ao clicar no botão "Venda"
+        vendaButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                FinalizarVendaModal.abrirFinalizarVendaModal();
+            }
+        });
+
         // Adiciona KeyListener para abrir o modal ao pressionar F3
         addKeyListener(new KeyAdapter() {
             @Override
