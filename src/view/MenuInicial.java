@@ -1,6 +1,10 @@
 package src.view;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class MenuInicial extends JFrame {
     private JPanel contentPane;
@@ -25,6 +29,28 @@ public class MenuInicial extends JFrame {
         for (JButton botao : botoes) {
             botao.setFocusPainted(false);
         }
+
+        // Abre o modal ao clicar no botão "Cliente"
+        clienteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ClienteModal.abrirClienteModal();
+            }
+        });
+
+        // Adiciona KeyListener para abrir o modal ao pressionar F3
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_F3) {
+                    ClienteModal.abrirClienteModal();
+                }
+            }
+        });
+
+        // Garante que a janela receba eventos do teclado
+        setFocusable(true);
+        requestFocusInWindow();
     }
 
     public static void main(String[] args) {
