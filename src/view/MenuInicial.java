@@ -30,32 +30,6 @@ public class MenuInicial extends JFrame {
             botao.setFocusPainted(false);
         }
 
-        // Abre o modal ao clicar no botão "Cliente"
-        clienteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ClienteModal.abrirClienteModal();
-            }
-        });
-
-        // Abre o modal ao clicar no botão "Venda"
-        vendaButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                FinalizarVendaModal.abrirFinalizarVendaModal();
-            }
-        });
-
-        // Adiciona KeyListener para abrir o modal ao pressionar F3
-        addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_F3) {
-                    ClienteModal.abrirClienteModal();
-                }
-            }
-        });
-
         // Garante que a janela receba eventos do teclado
         setFocusable(true);
         requestFocusInWindow();
