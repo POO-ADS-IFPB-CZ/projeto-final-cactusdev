@@ -40,7 +40,9 @@
                 <preferred-size width="150" height="30"/>
               </grid>
             </constraints>
-            <properties/>
+            <properties>
+              <font size="14"/>
+            </properties>
           </component>
           <component id="5dfa1" class="javax.swing.JTextField" binding="textField3" default-binding="true">
             <constraints>
@@ -76,6 +78,7 @@
               </grid>
             </constraints>
             <properties>
+              <font size="14"/>
               <model>
                 <item value="UN"/>
                 <item value="MT"/>
@@ -91,7 +94,9 @@
                 <preferred-size width="150" height="30"/>
               </grid>
             </constraints>
-            <properties/>
+            <properties>
+              <font size="14"/>
+            </properties>
           </component>
         </children>
       </grid>
