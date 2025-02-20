@@ -1,6 +1,10 @@
 package src.view;
 
 import javax.swing.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class Venda extends JFrame {
     private JPanel contentPane;
@@ -19,6 +23,27 @@ public class Venda extends JFrame {
         getRootPane().setDefaultButton(buttonOK);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        setFocusable(true);
+
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    new MenuInicial();
+                    dispose();
+                }
+            }
+        });
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowActivated(WindowEvent e) {
+                requestFocusInWindow();
+            }
+        });
+
+        setVisible(true);
     }
 
     public static void main(String[] args) {
