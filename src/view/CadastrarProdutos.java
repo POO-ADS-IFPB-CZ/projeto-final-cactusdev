@@ -34,7 +34,7 @@ public class CadastrarProdutos extends JFrame {
             String qtdEstoque = qtd_estoque.getText();
             String categoriaProduto = (String) categoria.getSelectedItem();
 
-            produtoService.criarProduto(descricaoProduto, precoUnitario, unidadeMedida, qtdEstoque, categoriaProduto);
+            if (produtoService.criarProduto(descricaoProduto, precoUnitario, unidadeMedida, qtdEstoque, categoriaProduto)) limparCampos();
 
 
         });
@@ -49,5 +49,11 @@ public class CadastrarProdutos extends JFrame {
         dialog.pack();
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
+    }
+
+    private void limparCampos(){
+        descricao.setText("");
+        valor_unitario.setText("");
+        qtd_estoque.setText("");
     }
 }

@@ -6,7 +6,7 @@ import src.services.adapters.GenerateWithDateRandom;
 
 import java.awt.Component;
 
-public class Validator {
+public class ValidatorProduto {
     static public Produto validarCamposCriarProduto(
             Component parent,
             String descricao,

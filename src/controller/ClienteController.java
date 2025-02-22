@@ -1,6 +1,7 @@
 package src.controller;
 
 import src.dao.Dao;
+import src.dao.DaoWithFile;
 import src.model.Cliente;
 import src.view.customErrors.Faill;
 import src.view.customErrors.Success;
@@ -12,8 +13,12 @@ public final class ClienteController {
 
     private final Dao<Cliente, String> clienteDao;
 
-    public ClienteController(Dao<Cliente, String> dao) {
-        this.clienteDao = dao;
+    public ClienteController() {
+        try {
+            this.clienteDao = new DaoWithFile<Cliente, String>("Clientes");
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void addCliente(Cliente cliente) {
