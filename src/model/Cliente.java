@@ -60,9 +60,17 @@ public class Cliente implements Serializable {
     }
 
     // toString, equals, hashCode
+
+
     @Override
     public String toString() {
-        return "Cliente{" + "cpf='" + cpf + '\'' + ", nome='" + nome + '\'' + '}';
+        return "Cliente{" +
+                "cpf='" + cpf + '\'' +
+                ", nome='" + nome + '\'' +
+                ", telefone='" + telefone + '\'' +
+                ", dataCadastro=" + dataCadastro +
+                ", ativo=" + ativo +
+                '}';
     }
 
     @Override
