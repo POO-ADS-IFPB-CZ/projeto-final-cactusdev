@@ -1,6 +1,7 @@
 package src.controller;
 
 import src.dao.Dao;
+import src.dao.DaoWithFile;
 import src.model.Produto;
 import src.view.customErrors.Faill;
 import src.view.customErrors.Success;
@@ -13,8 +14,12 @@ public final class ProdutoController {
 
     private final Dao<Produto, String> produtoDao;
 
-    public ProdutoController(Dao<Produto, String> dao){
-        this.produtoDao = dao;
+    public ProdutoController(){
+        try {
+            this.produtoDao = new DaoWithFile<Produto, String>("Produtos");
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public  void addProduto(Produto produto){
