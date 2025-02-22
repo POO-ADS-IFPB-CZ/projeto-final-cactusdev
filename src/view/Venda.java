@@ -1,6 +1,7 @@
 package src.view;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -8,14 +9,14 @@ import java.awt.event.WindowEvent;
 
 public class Venda extends JFrame {
     private JPanel contentPane;
-    private JList list1;
     private JTextField textField1;
     private JTextField textField2;
     private JTextField textField3;
     private JTextField textField5;
     private JTextField textField6;
-    private JTextField textField7;
     private JTextField textField4;
+    private JTable table1;
+    private JTextField textField7;
     private JButton buttonOK;
 
     public Venda() {
@@ -23,6 +24,14 @@ public class Venda extends JFrame {
         getRootPane().setDefaultButton(buttonOK);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        DefaultTableModel modelo = new DefaultTableModel();
+        modelo.addColumn("Produto");
+        modelo.addColumn("Quantidade");
+        modelo.addColumn("Preço Unitário");
+        modelo.addColumn("Total");
+
+        table1.setModel(modelo);
 
         setFocusable(true);
 
