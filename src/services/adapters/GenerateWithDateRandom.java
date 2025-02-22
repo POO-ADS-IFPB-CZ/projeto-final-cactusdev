@@ -1,4 +1,4 @@
-package src.services.adapters.codigo_generator;
+package src.services.adapters;
 
 import src.model.interfaces.CodigoGenerator;
 
