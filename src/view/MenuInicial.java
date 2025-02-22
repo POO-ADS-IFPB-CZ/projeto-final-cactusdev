@@ -29,10 +29,19 @@ public class MenuInicial extends JFrame {
         for (JButton botao : botoes) {
             botao.setFocusPainted(false);
         }
-
-        // Garante que a janela receba eventos do teclado
-        setFocusable(true);
-        requestFocusInWindow();
+        vendaButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Venda vendaTela = new Venda();
+                vendaTela.setVisible(true);
+            }
+        });
+        sairButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
     }
 
     public static void main(String[] args) {
