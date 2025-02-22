@@ -29,7 +29,6 @@ public class MenuInicial extends JFrame {
         for (JButton botao : botoes) {
             botao.setFocusPainted(false);
         }
-
         vendaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
