@@ -12,16 +12,18 @@ public class Produto implements Serializable {
     private double preco;
     private double qtdEstoque;
     private Categoria_produto categoria;
+    private String medida;
 
     static private final long serialVersionUID = 1L;
 
     public Produto(CodigoGenerator adapter, String descricao, double preco, double quantidade ,
-                   Categoria_produto categoria) {
+                   Categoria_produto categoria, String medida) {
         this.codigo = adapter.gerarCodigo();
         this.descricao = descricao;
         this.preco = preco;
         this.qtdEstoque = quantidade < 0 ? 0 : quantidade;
         this.categoria = categoria;
+        this.medida = medida;
     }
 
     public String getCodigo() {
@@ -62,11 +64,14 @@ public class Produto implements Serializable {
 
     @Override
     public String toString() {
-        return  descricao +
-                "," + codigo +
-                "," + preco +
-                "," + qtdEstoque +
-                "," + categoria;
+        return "Produto{" +
+                "codigo='" + codigo + '\'' +
+                ", descricao='" + descricao + '\'' +
+                ", preco=" + preco +
+                ", qtdEstoque=" + qtdEstoque +
+                ", categoria=" + categoria +
+                ", medida='" + medida + '\'' +
+                '}';
     }
 
     @Override
@@ -79,5 +84,13 @@ public class Produto implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hashCode(codigo);
+    }
+
+    public String getMedida() {
+        return medida;
+    }
+
+    public void setMedida(String medida) {
+        this.medida = medida;
     }
 }
