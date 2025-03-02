@@ -5,7 +5,7 @@ import src.services.ClienteService;
 
 import javax.swing.*;
 
-public class Cliente extends JDialog {
+public class CadastrarCliente extends JDialog {
     private JPanel contentPane;
     private JButton concluir;
     private JButton cancelar;
@@ -14,7 +14,7 @@ public class Cliente extends JDialog {
     private JTextField telefone;
     private final ClienteService clienteService;
 
-    public Cliente() {
+    public CadastrarCliente() {
         clienteService = new ClienteService(new ClienteController());
         setContentPane(contentPane);
         setModal(true);
@@ -38,7 +38,7 @@ public class Cliente extends JDialog {
     }
 
     public static void main(String[] args) {
-        Cliente dialog = new Cliente();
+        CadastrarCliente dialog = new CadastrarCliente();
         dialog.pack();
         dialog.setVisible(true);
         System.exit(0);
