@@ -9,6 +9,7 @@ import src.view.customErrors.Success;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Optional;
 
 public final class ProdutoController {
 
@@ -71,6 +72,10 @@ public final class ProdutoController {
         } catch (CustomError e) {
             Faill.show(null, "Produto não existe.");
         }
+    }
+
+    public Optional<Produto> pegarProdutoPorCodigo(String codigo){
+        return Optional.ofNullable(produtoDao.getList().get(codigo));
     }
 
     public Collection<Produto> listarProdutos(){

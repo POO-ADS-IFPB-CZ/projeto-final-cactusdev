@@ -3,8 +3,6 @@ package src.view;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 public class MenuInicial extends JFrame {
     private JPanel contentPane;
@@ -32,7 +30,7 @@ public class MenuInicial extends JFrame {
         vendaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Venda vendaTela = new Venda();
+                TelaVenda vendaTela = new TelaVenda();
                 vendaTela.setVisible(true);
             }
         });
@@ -41,6 +39,11 @@ public class MenuInicial extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 System.exit(0);
             }
+        });
+
+        produtoButton.addActionListener((e)-> {
+            Produtos produtos = new Produtos(false);
+            produtos.setVisible(true);
         });
     }
 

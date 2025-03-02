@@ -45,4 +45,10 @@ String categoria){
         }
     }
 
+    public void atualizarTabela(DefaultTableModel model){
+        model.setRowCount(0);
+
+        mostrarProdutosNaTabela(model);
+    }
+
 }

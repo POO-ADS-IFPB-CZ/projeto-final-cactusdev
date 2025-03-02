@@ -74,6 +74,10 @@ public class Produto implements Serializable {
                 '}';
     }
 
+    public String formatado() {
+        return descricao + " " + codigo + " " + preco + " " + categoria + " " + medida + " " + qtdEstoque;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
