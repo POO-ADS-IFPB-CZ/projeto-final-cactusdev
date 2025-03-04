@@ -29,6 +29,7 @@ public class MenuInicial extends JFrame {
         for (JButton botao : botoes) {
             botao.setFocusPainted(false);
         }
+
         vendaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -36,10 +37,48 @@ public class MenuInicial extends JFrame {
                 vendaTela.setVisible(true);
             }
         });
+
+        produtoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Produtos produtosTela = new Produtos();
+                produtosTela.setVisible(true);
+            }
+        });
+
+        clienteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Cliente clientesTela = new Cliente();
+                clientesTela.setVisible(true);
+                adicionarFechamentoESC(clientesTela);
+            }
+        });
+
+        fornecedorButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Fornecedor fornecedorTela = new Fornecedor();
+                fornecedorTela.setVisible(true);
+                adicionarFechamentoESC(fornecedorTela);
+            }
+        });
+
         sairButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.exit(0);
+            }
+        });
+    }
+
+    private void adicionarFechamentoESC(JFrame frame) {
+        frame.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    frame.dispose();
+                }
             }
         });
     }
