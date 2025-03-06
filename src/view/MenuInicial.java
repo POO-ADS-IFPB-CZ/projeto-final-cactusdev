@@ -1,5 +1,7 @@
 package src.view;
 
+import src.model.Venda;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -41,7 +43,7 @@ public class MenuInicial extends JFrame {
         produtoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Produtos produtosTela = new Produtos(false);
+                Produtos produtosTela = new Produtos();
                 produtosTela.setVisible(true);
             }
         });
@@ -69,11 +71,6 @@ public class MenuInicial extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 System.exit(0);
             }
-        });
-
-        produtoButton.addActionListener((e)-> {
-            Produtos produtos = new Produtos(false);
-            produtos.setVisible(true);
         });
     }
 
