@@ -49,7 +49,7 @@ public class MenuInicial extends JFrame {
         clienteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                TelaCliente telaCliente = new TelaCliente();
+                TelaCliente telaCliente = new TelaCliente(false);
                 telaCliente.setVisible(true);
             }
         });

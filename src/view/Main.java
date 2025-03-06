@@ -1,9 +1,12 @@
 package src.view;
 
+import src.controller.ClienteController;
 import src.controller.ProdutoController;
 import src.dao.DaoWithFile;
 import src.model.Categoria_produto;
+import src.model.Cliente;
 import src.model.Produto;
+import src.services.ClienteService;
 import src.services.adapters.GenerateWithValue;
 
 import java.io.IOException;
@@ -33,6 +36,12 @@ public class Main {
         System.out.println("Itens depois da remoção: " + produtoController.listarProdutos());
 
         produtoController.listarProdutos().forEach(System.out::println);
+
+        Cliente diego = new Cliente("1234567891011", "Jacinto Leite Aquino Reguo", "8899953523671");
+
+        diego.setAtivo(false);
+
+        new ClienteController().addCliente(diego);
 
     }
 }
