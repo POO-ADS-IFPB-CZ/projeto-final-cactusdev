@@ -4,8 +4,9 @@ import src.controller.ProdutoController;
 import src.services.ProdutoService;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
-public class CadastrarProdutos extends JFrame {
+public class CadastrarProdutos extends JDialog {
     private JPanel contentPane;
     private JComboBox unidade_medida;
     private JTextField valor_unitario;
@@ -17,12 +18,13 @@ public class CadastrarProdutos extends JFrame {
     private JButton buttonOK;
     private final ProdutoService produtoService;
 
-    public CadastrarProdutos() {
+    public CadastrarProdutos(DefaultTableModel tabelaProdutos) {
         produtoService = new ProdutoService(new ProdutoController());
         setContentPane(contentPane);
+        setModal(true);
         getRootPane().setDefaultButton(buttonOK);
         setTitle("Cadastro de Produtos");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        pack();
         setResizable(false);
 
 
@@ -34,7 +36,10 @@ public class CadastrarProdutos extends JFrame {
             String qtdEstoque = qtd_estoque.getText();
             String categoriaProduto = (String) categoria.getSelectedItem();
 
-            if (produtoService.criarProduto(descricaoProduto, precoUnitario, unidadeMedida, qtdEstoque, categoriaProduto)) limparCampos();
+            if (produtoService.criarProduto(descricaoProduto, precoUnitario, unidadeMedida, qtdEstoque, categoriaProduto)) {
+                produtoService.atualizarTabela(tabelaProdutos);
+                dispose();
+            }
 
 
         });
@@ -42,13 +47,6 @@ public class CadastrarProdutos extends JFrame {
         cancelarButton.addActionListener((e)-> {
             dispose();
         });
-    }
-
-    public static void main(String[] args) {
-        CadastrarProdutos dialog = new CadastrarProdutos();
-        dialog.pack();
-        dialog.setLocationRelativeTo(null);
-        dialog.setVisible(true);
     }
 
     private void limparCampos(){

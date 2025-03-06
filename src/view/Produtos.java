@@ -1,8 +1,11 @@
 package src.view;
 
 import src.controller.ProdutoController;
+import src.model.Produto;
 import src.services.ProdutoService;
+import src.services.filters.ProdutoFilters;
 import src.view.customErrors.Faill;
+import src.view.customErrors.Success;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -10,7 +13,7 @@ import javax.swing.table.TableRowSorter;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-public class Produtos extends JFrame {
+public class Produtos extends JDialog {
     private JPanel contentPane;
     private JTextField inputDescricao;
     private JTextField inputCodigo;
@@ -21,18 +24,22 @@ public class Produtos extends JFrame {
     private JButton sairESCButton;
     private JButton alterarProdutoButton;
     private JButton cadastrarProdutoButton;
+    private JPanel panelBotoes;
+    private JButton selecionarButton;
     private JButton buttonOK;
+    private Produto produtoSelecionado = null;
     private final ProdutoService produtoService = new ProdutoService(new ProdutoController());
     private DefaultTableModel tableModel;
     private TableRowSorter<DefaultTableModel> rowSorter;
 
-    public Produtos() {
+    public Produtos(boolean isVenda) {
         setContentPane(contentPane);
+        setModal(true);
         setTitle("Produtos");
         getRootPane().setDefaultButton(buttonOK);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        pack();
+        setLocationRelativeTo(null);
 
         produtoService.mostrarProdutosNaTabela(tableModel);
 
@@ -41,11 +48,29 @@ public class Produtos extends JFrame {
         // Evento para sair ao clicar no botão "Sair (ESC)"
         sairESCButton.addActionListener((e) -> fecharJanela());
 
+        verificarIsVenda(isVenda);
+
+        selecionarButton.addActionListener((e) -> selecionarProduto());
+
+        cadastrarProdutoButton.addActionListener((e)-> {
+            CadastrarProdutos cadastrarProdutos = new CadastrarProdutos(tableModel);
+            cadastrarProdutos.setLocationRelativeTo(this);
+            cadastrarProdutos.setVisible(true);
+        });
+
         // Adiciona evento para detectar Enter nos campos de pesquisa e ESC para sair
         KeyAdapter keyAdapter = new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+
+                    if (e.getComponent() == inputDescricao) {
+                        opcaoBusca.setSelectedItem("DESCRICAO");
+                    } else if (e.getComponent() == inputCodigo) {
+                        opcaoBusca.setSelectedItem("CODIGO");
+                    } else if (e.getComponent() == selectCategoria) {
+                        opcaoBusca.setSelectedItem("CATEGORIA");
+                    }
                     buscarProdutos();
                 } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     fecharJanela();
@@ -65,49 +90,38 @@ public class Produtos extends JFrame {
 
         switch (opcaoSelecionada) {
             case "TODOS":
-                rowSorter.setRowFilter(null);
+                ProdutoFilters.limparFiltros(rowSorter);
                 break;
             case "CODIGO":
-                filtrarTabelaPorCodigo();
+                ProdutoFilters.filtrarTabelaPorCodigo(inputCodigo.getText(), rowSorter);
                 break;
             case "DESCRICAO":
-                filtrarTabelaPorDescricao();
+                ProdutoFilters.filtrarTabelaPorDescricao(inputDescricao.getText(), rowSorter);
                 break;
             case "CATEGORIA":
-                filtrarTabelaPorCategoria();
+                ProdutoFilters.filtrarTabelaPorCategoria((String) selectCategoria.getSelectedItem(), rowSorter);
                 break;
             default:
                 Faill.show(this, "Nenhuma opção de busca selecionada");
         }
     }
 
-    private void filtrarTabelaPorCodigo() {
-        String codigoFiltro = inputCodigo.getText().trim();
+    private void verificarIsVenda(Boolean isVenda){
+        if (!isVenda){
+            selecionarButton.setVisible(false);
 
-        if (codigoFiltro.isEmpty()) {
-            rowSorter.setRowFilter(null);
-        } else {
-            rowSorter.setRowFilter(RowFilter.regexFilter("^" + codigoFiltro + "$", 0));
-        }
-    }
+        }else{
+            alterarProdutoButton.setVisible(false);
 
-    private void filtrarTabelaPorDescricao() {
-        String descricaoFiltro = inputDescricao.getText().trim();
-
-        if (descricaoFiltro.isEmpty()) {
-            rowSorter.setRowFilter(null);
-        } else {
-            rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + descricaoFiltro, 1));
-        }
-    }
-
-    private void filtrarTabelaPorCategoria() {
-        String categoriaFiltro = (String) selectCategoria.getSelectedItem();
-
-        if (categoriaFiltro == null || categoriaFiltro.trim().isEmpty()) {
-            rowSorter.setRowFilter(null);
-        } else {
-            rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + categoriaFiltro, 4));
+            //evento para selecionar produto na tabela, só funciona se estiver na venda
+            tabelaProdutos.addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                        selecionarProduto();
+                    }
+                }
+            });
         }
     }
 
@@ -115,11 +129,34 @@ public class Produtos extends JFrame {
         dispose(); // Fecha a janela
     }
 
+    private void selecionarProduto() {
+        int row = tabelaProdutos.getSelectedRow();
+        if (row != -1) {
+            String codigo = (String) tabelaProdutos.getValueAt(row, 0);
+            produtoSelecionado= new ProdutoController()
+                    .pegarProdutoPorCodigo(codigo)
+                    .orElse(null);
+
+            if (produtoSelecionado == null){
+                throw new RuntimeException();
+            }
+
+            fecharJanela();
+
+        } else {
+            JOptionPane.showMessageDialog(this, "Selecione um produto!", "Aviso", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    public Produto getProdutoSelecionado() {
+        return produtoSelecionado;
+    }
+
     public static void main(String[] args) {
-        Produtos dialog = new Produtos();
+        Produtos dialog = new Produtos(true);
         dialog.pack();
-        dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
+        System.exit(0);
     }
 
     private void createUIComponents() {

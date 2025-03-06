@@ -1,5 +1,7 @@
 package src.view;
 
+import src.model.Venda;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,7 +35,7 @@ public class MenuInicial extends JFrame {
         vendaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Venda vendaTela = new Venda();
+                TelaVenda vendaTela = new TelaVenda();
                 vendaTela.setVisible(true);
             }
         });
