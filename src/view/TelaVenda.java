@@ -4,7 +4,9 @@ import src.model.Item_produto;
 import src.model.Produto;
 import src.services.VendaItensService;
 import src.services.adapters.GenerateWithDateRandom;
+import src.services.formatters.ValorParaDinheiro;
 import src.view.customErrors.Faill;
+import src.view.customErrors.Success;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -57,6 +59,22 @@ public class TelaVenda extends JFrame {
             }
         });
 
+        deletarItemTabela();
+
+        eventoAtualizaQuantidadeItem();
+
+        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0), "finalizarVenda");
+
+        getRootPane().getActionMap().put("finalizarVenda", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                FinalizarVenda telaFinalizar = new FinalizarVenda(vendaItensService, modelo);
+                telaFinalizar.setVisible(true);
+            }
+        });
+
+
 
         eventoInputQuantidade();
 
@@ -82,9 +100,9 @@ public class TelaVenda extends JFrame {
 
     public void atualizarInputs(Produto produto){
         descricao_item.setText(produto.getDescricao());
-        preco_unitario_item.setText(String.format("%.2f", produto.getPreco()));
+        preco_unitario_item.setText(ValorParaDinheiro.converter(produto.getPreco(), "pt", "BR"));
         quantidade_item.setText("1");
-        total_item.setText(String.format("%.2f", produto.getPreco()));
+        total_item.setText(ValorParaDinheiro.converter(produto.getPreco(), "pt", "BR"));
         unidade_item.setText(produto.getMedida());
     }
 
@@ -116,18 +134,89 @@ public class TelaVenda extends JFrame {
         });
     }
 
+    private void deletarItemTabela(){
+        tabela_itens_venda.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+                    int linhaSelecionada = tabela_itens_venda.getSelectedRow();
+                    if (linhaSelecionada != -1) {
+                        vendaItensService.removerItem((String) tabela_itens_venda.getValueAt(linhaSelecionada, 0), modelo);
+                        atualizarTotalVenda();
+                        zerarCampos();
+                    }
+                }
+            }
+        });
+
+    }
+
     private void adicionarItem(){
         if (produtoSelecionado != null && !quantidade_item.getText().trim().isEmpty()){
             try{
-                double qtdItem = Double.parseDouble(quantidade_item.getText().trim());
+                double qtdItem = Integer.parseInt(quantidade_item.getText().trim());
                 Item_produto itemProduto = new Item_produto(new GenerateWithDateRandom(), produtoSelecionado, qtdItem);
                 vendaItensService.adicionarItemVenda(itemProduto, modelo);
-                subtotal_venda.setText(String.format("%.2f", vendaItensService.getSubtotalVendaAtual()));
-                total_venda.setText(String.format("%.2f", vendaItensService.getSubtotalVendaAtual()));
+                atualizarTotalVenda();
             }catch (NumberFormatException ex){
                 Faill.show(null, "Não foi possivel adicionar o item");
+            }catch (IllegalArgumentException e){
+                Faill.show(null,e.getMessage());
             }
         }
+    }
+
+    private void eventoAtualizaQuantidadeItem() {
+        tabela_itens_venda.getColumnModel().getColumn(2).setCellEditor(new DefaultCellEditor(new JTextField()) {
+            @Override
+            public boolean stopCellEditing() {
+                JTextField editor = (JTextField) getComponent();
+                String valor = editor.getText().trim();
+                int linhaSelecionada = tabela_itens_venda.getSelectedRow();
+
+                if (linhaSelecionada != -1) {
+                    String codItem = (String) tabela_itens_venda.getValueAt(linhaSelecionada, 0);
+
+                    try {
+                        int quantidade = Integer.parseInt(valor);
+
+                        if (quantidade <= 0) {
+                            throw new NumberFormatException(); // Impede valores negativos ou zero
+                        }
+
+                        try {
+                            vendaItensService.atualizarQtdItem(codItem, quantidade);
+                        } catch (IllegalArgumentException ex) {
+                            Faill.show(null, ex.getMessage());
+                        }
+                    } catch (NumberFormatException ex) {
+                        Faill.show(null, "Quantidade inválida. Insira um número inteiro positivo.");
+                        return false; // Impede a célula de ser salva com um valor inválido
+                    } finally {
+                        vendaItensService.mostrarVendasNaTabela(modelo);
+                        atualizarInputs(produtoSelecionado);
+                        atualizarTotalVenda();
+                    }
+                }
+
+                return super.stopCellEditing();
+            }
+        });
+
+    }
+
+    private void zerarCampos(){
+        descricao_item.setText("SEM DESCRIÇÃO");
+        preco_unitario_item.setText("0.00");
+        quantidade_item.setEnabled(false);
+        quantidade_item.setText("");
+        total_item.setText("0.00");
+        unidade_item.setText("NENHUMA");
+    }
+
+    private void atualizarTotalVenda(){
+        total_venda.setText(ValorParaDinheiro.converter(vendaItensService.getSubtotalVendaAtual(), "pt", "BR"));
+        subtotal_venda.setText(ValorParaDinheiro.converter(vendaItensService.getSubtotalVendaAtual(), "pt", "BR"));
     }
 
     private void atualizarTotal() {
@@ -138,14 +227,11 @@ public class TelaVenda extends JFrame {
                 quantidade = Integer.parseInt(quantidade_item.getText().trim());
             } catch (NumberFormatException e) {
                 quantidade = 1;
-
-                if (!quantidade_item.getText().trim().isEmpty()){
-                    quantidade_item.setText("1");
-                }
+                quantidade_item.setText("1");
             }
 
             double preco = produtoSelecionado.getPreco();
-            total_item.setText(String.format("%.2f", quantidade * preco));
+            total_item.setText(ValorParaDinheiro.converter(quantidade*preco, "pt", "BR"));
         }
     }
 
@@ -166,8 +252,14 @@ public class TelaVenda extends JFrame {
 
         tabela_itens_venda.setIntercellSpacing(new Dimension(0, 30)); // Define um espaçamento de 5px entre as células
 
+        modelo = new DefaultTableModel(){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                // Apenas a coluna 2 será editável, todas as outras não
+                return column == 2; // Modifique para a coluna que você deseja
+            }
+        };
 
-        modelo = new DefaultTableModel();
         modelo.addColumn("Item");
         modelo.addColumn("Produto");
         modelo.addColumn("Quantidade");
@@ -177,19 +269,24 @@ public class TelaVenda extends JFrame {
 
         tabela_itens_venda.setModel(modelo);
 
+
         tabela_itens_venda.getColumnModel().getColumn(2).setCellRenderer(new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-                if (!isSelected) { // Para manter a seleção funcionando corretamente
-                    cell.setBackground(Color.GREEN);
+                if (isSelected) {
+                    cell.setBackground(table.getSelectionBackground()); // Usa a cor padrão de seleção
+                    cell.setForeground(table.getSelectionForeground());
+                } else {
+                    cell.setBackground(Color.GREEN); // Cor personalizada para células não selecionadas
                     cell.setForeground(Color.BLACK);
                 }
 
                 return cell;
             }
         });
+
 
 
     }

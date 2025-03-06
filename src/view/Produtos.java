@@ -48,12 +48,7 @@ public class Produtos extends JDialog {
         // Evento para sair ao clicar no botão "Sair (ESC)"
         sairESCButton.addActionListener((e) -> fecharJanela());
 
-        if (!isVenda){
-            selecionarButton.setVisible(false);
-
-        }else{
-            alterarProdutoButton.setVisible(false);
-        }
+        verificarIsVenda(isVenda);
 
         selecionarButton.addActionListener((e) -> selecionarProduto());
 
@@ -108,6 +103,25 @@ public class Produtos extends JDialog {
                 break;
             default:
                 Faill.show(this, "Nenhuma opção de busca selecionada");
+        }
+    }
+
+    private void verificarIsVenda(Boolean isVenda){
+        if (!isVenda){
+            selecionarButton.setVisible(false);
+
+        }else{
+            alterarProdutoButton.setVisible(false);
+
+            //evento para selecionar produto na tabela, só funciona se estiver na venda
+            tabelaProdutos.addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                        selecionarProduto();
+                    }
+                }
+            });
         }
     }
 

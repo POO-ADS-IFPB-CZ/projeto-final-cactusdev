@@ -15,14 +15,15 @@ public class Venda implements Serializable {
     private final String codigo;
     private Map<String, Item_produto> itens;
     private LocalDateTime dataHora;
-    private MetodoPagamento metodoPagamento;
-
+    private Cliente cliente;
+    private String metodoPagamento;
     static private final long serialVersionUID = 1L;
 
     public Venda(CodigoGenerator adapter){
         this.codigo = adapter.gerarCodigo();
         itens = new HashMap<>();
         dataHora = LocalDateTime.now();
+        this.cliente = null;
     }
 
     public double getTotal(){
@@ -75,6 +76,8 @@ public class Venda implements Serializable {
                 "codigo='" + codigo + '\'' +
                 ", itens=" + itens +
                 ", dataHora=" + dataHora +
+                ", cliente=" + cliente +
+                ", metodoPagamento=" + metodoPagamento +
                 '}';
     }
 
@@ -90,12 +93,24 @@ public class Venda implements Serializable {
         return Objects.hashCode(codigo);
     }
 
-    public MetodoPagamento getMetodoPagamento() {
-        return metodoPagamento;
+    public Cliente getCliente() {
+        return cliente;
     }
 
-    public void setMetodoPagamento(MetodoPagamento metodoPagamento) {
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public String getMetodoPagamento() {
+        return this.metodoPagamento;
+    }
+
+    public void setMetodoPagamento(String metodoPagamento) {
         this.metodoPagamento = metodoPagamento;
+    }
+
+    public Item_produto getItem(String codigo){
+        return this.itens.get(codigo);
     }
 }
 
