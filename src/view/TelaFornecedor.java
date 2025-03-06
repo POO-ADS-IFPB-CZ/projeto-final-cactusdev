@@ -9,9 +9,10 @@ public class TelaFornecedor extends JFrame {
     private JButton alterarFornecedorButton;
     private JButton cadastrarFornecedorButton;
     private JButton sairButton;
-    private JTextField textField1;
-    private JComboBox comboBox1;
+    private JTextField nome;
+    private JComboBox opcao_busca;
     private JTable table1;
+    private JTextField cnpj;
     private TableRowSorter<DefaultTableModel> rowSorter;
     private JButton buttonOK;
 
