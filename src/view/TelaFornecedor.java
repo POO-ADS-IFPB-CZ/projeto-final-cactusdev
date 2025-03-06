@@ -4,7 +4,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
-public class Fornecedor extends JFrame {
+public class TelaFornecedor extends JFrame {
     private JPanel contentPane;
     private JButton alterarFornecedorButton;
     private JButton cadastrarFornecedorButton;
@@ -15,7 +15,7 @@ public class Fornecedor extends JFrame {
     private TableRowSorter<DefaultTableModel> rowSorter;
     private JButton buttonOK;
 
-    public Fornecedor() {
+    public TelaFornecedor() {
 
         setContentPane(contentPane);
         setTitle("Fornecedor");
@@ -38,7 +38,7 @@ public class Fornecedor extends JFrame {
     }
 
     public static void main(String[] args) {
-        Fornecedor dialog = new Fornecedor();
+        TelaFornecedor dialog = new TelaFornecedor();
         dialog.pack();
         dialog.setVisible(true);
     }

@@ -4,7 +4,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
-public class Cliente extends JFrame {
+public class TelaCliente extends JFrame {
     private JPanel contentPane;
     private JButton cadastrarClienteButton;
     private JButton alterarClienteButton;
@@ -15,7 +15,7 @@ public class Cliente extends JFrame {
     private TableRowSorter<DefaultTableModel> rowSorter;
     private JButton buttonOK;
 
-    public Cliente() {
+    public TelaCliente() {
 
         setContentPane(contentPane);
         setTitle("Cliente");
@@ -38,7 +38,7 @@ public class Cliente extends JFrame {
     }
 
     public static void main(String[] args) {
-        Cliente dialog = new Cliente();
+        TelaCliente dialog = new TelaCliente();
         dialog.pack();
         dialog.setVisible(true);
     }

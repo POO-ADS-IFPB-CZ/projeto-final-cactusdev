@@ -1,7 +1,5 @@
 package src.view;
 
-import src.model.Venda;
-
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -51,16 +49,15 @@ public class MenuInicial extends JFrame {
         clienteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Cliente clientesTela = new Cliente();
-                clientesTela.setVisible(true);
-                adicionarFechamentoESC(clientesTela);
+                TelaCliente telaCliente = new TelaCliente();
+                telaCliente.setVisible(true);
             }
         });
 
         fornecedorButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Fornecedor fornecedorTela = new Fornecedor();
+                TelaFornecedor fornecedorTela = new TelaFornecedor();
                 fornecedorTela.setVisible(true);
                 adicionarFechamentoESC(fornecedorTela);
             }
