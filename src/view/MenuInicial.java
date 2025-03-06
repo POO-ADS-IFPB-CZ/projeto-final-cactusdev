@@ -43,7 +43,7 @@ public class MenuInicial extends JFrame {
         produtoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Produtos produtosTela = new Produtos();
+                Produtos produtosTela = new Produtos(false);
                 produtosTela.setVisible(true);
             }
         });
