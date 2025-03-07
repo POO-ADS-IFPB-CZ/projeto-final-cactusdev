@@ -1,6 +1,7 @@
 package src.controller;
 
 import src.dao.Dao;
+import src.dao.DaoWithFile;
 import src.model.Fornecedor;
 import src.view.customErrors.Faill;
 import src.view.customErrors.Success;
@@ -12,8 +13,13 @@ public final class FornecedorController {
 
     private final Dao<Fornecedor, String> fornecedorDao;
 
-    public FornecedorController(Dao<Fornecedor, String> dao) {
-        this.fornecedorDao = dao;
+    public FornecedorController() {
+
+        try {
+            this.fornecedorDao = new DaoWithFile<Fornecedor, String>("Fornecedores");
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void addFornecedor(Fornecedor fornecedor) {
@@ -62,5 +68,9 @@ public final class FornecedorController {
                 Faill.show(null, "Erro interno ao salvar os fornecedores: " + e.getMessage());
             }
         }
+    }
+
+    public Fornecedor getFornecedorPorCodigo(String codigo){
+        return fornecedorDao.getList().get(codigo);
     }
 }

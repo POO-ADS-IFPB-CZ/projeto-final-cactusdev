@@ -57,7 +57,7 @@ public class MenuInicial extends JFrame {
         fornecedorButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                TelaFornecedor fornecedorTela = new TelaFornecedor();
+                TelaFornecedor fornecedorTela = new TelaFornecedor(false);
                 fornecedorTela.setVisible(true);
                 adicionarFechamentoESC(fornecedorTela);
             }

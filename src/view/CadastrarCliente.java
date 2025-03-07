@@ -39,10 +39,4 @@ public class CadastrarCliente extends JDialog {
             dispose();
         });
     }
-
-    private void limparCampos(){
-        nome.setText("");
-        cpf.setText("");
-        telefone.setText("");
-    }
 }
