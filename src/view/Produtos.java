@@ -31,15 +31,20 @@ public class Produtos extends JFrame {
         setTitle("Produtos");
         getRootPane().setDefaultButton(buttonOK);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setResizable(false);
+        //setResizable(false);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
-
+        //setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         produtoService.mostrarProdutosNaTabela(tableModel);
 
         buscarButton.addActionListener((e) -> buscarProdutos());
 
         // Evento para sair ao clicar no botão "Sair (ESC)"
         sairESCButton.addActionListener((e) -> fecharJanela());
+
+        cadastrarProdutoButton.addActionListener((e) -> {
+            CadastrarProdutos cadastrarProdutos = new CadastrarProdutos(this);
+            cadastrarProdutos.setVisible(true);
+        });
 
         // Adiciona evento para detectar Enter nos campos de pesquisa e ESC para sair
         KeyAdapter keyAdapter = new KeyAdapter() {
@@ -118,7 +123,6 @@ public class Produtos extends JFrame {
     public static void main(String[] args) {
         Produtos dialog = new Produtos();
         dialog.pack();
-        dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
     }
 

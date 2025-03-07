@@ -4,54 +4,44 @@ import src.controller.ProdutoController;
 import src.services.ProdutoService;
 
 import javax.swing.*;
+import java.awt.*;
 
-public class CadastrarProdutos extends JFrame {
+public class CadastrarProdutos extends JDialog {
     private JPanel contentPane;
-    private JComboBox unidade_medida;
+    private JComboBox<String> unidade_medida;
     private JTextField valor_unitario;
     private JTextField qtd_estoque;
     private JTextField descricao;
     private JButton cancelarButton;
     private JButton confirmarButton;
-    private JComboBox categoria;
-    private JButton buttonOK;
+    private JComboBox<String> categoria;
     private final ProdutoService produtoService;
 
-    public CadastrarProdutos() {
+    public CadastrarProdutos(Frame parent) {
+        super(parent, "Cadastro de Produtos", true);
         produtoService = new ProdutoService(new ProdutoController());
         setContentPane(contentPane);
-        getRootPane().setDefaultButton(buttonOK);
-        setTitle("Cadastro de Produtos");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setResizable(false);
+        pack();
+        setLocationRelativeTo(parent);
 
-
-        confirmarButton.addActionListener((e)-> {
-            System.out.println(new ProdutoController().listarProdutos());
+        confirmarButton.addActionListener(e -> {
             String descricaoProduto = descricao.getText();
             String precoUnitario = valor_unitario.getText();
             String unidadeMedida = (String) unidade_medida.getSelectedItem();
             String qtdEstoque = qtd_estoque.getText();
             String categoriaProduto = (String) categoria.getSelectedItem();
 
-            if (produtoService.criarProduto(descricaoProduto, precoUnitario, unidadeMedida, qtdEstoque, categoriaProduto)) limparCampos();
-
-
+            if (produtoService.criarProduto(descricaoProduto, precoUnitario, unidadeMedida, qtdEstoque, categoriaProduto)) {
+                limparCampos();
+            }
         });
 
-        cancelarButton.addActionListener((e)-> {
-            dispose();
-        });
+        cancelarButton.addActionListener(e -> dispose());
     }
 
-    public static void main(String[] args) {
-        CadastrarProdutos dialog = new CadastrarProdutos();
-        dialog.pack();
-        dialog.setLocationRelativeTo(null);
-        dialog.setVisible(true);
-    }
-
-    private void limparCampos(){
+    private void limparCampos() {
         descricao.setText("");
         valor_unitario.setText("");
         qtd_estoque.setText("");
