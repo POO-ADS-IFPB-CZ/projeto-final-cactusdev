@@ -1,22 +1,23 @@
 package src.model;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.*;
 
 public class Fornecedor implements Serializable {
     private final String cnpj_cpf;
-    private String tipo;
+    private Tipo_fornecedor tipo;
     private String nome,endereco,telefone;
-    private Map<String,Produto> produtos;
+    private LocalDate dataCadastro;
     private static final long serialVersionUID = 1L;
 
-    public Fornecedor(String cnpj_cpf, String tipo, String nome, String endereco, String telefone, Map<String,Produto> produtos){
+    public Fornecedor(String cnpj_cpf, Tipo_fornecedor tipo, String nome, String endereco, String telefone){
         this.cnpj_cpf = cnpj_cpf;
         this.tipo = tipo;
         this.nome = nome;
         this.endereco = endereco;
         this.telefone = telefone;
-        this.produtos = new HashMap<>(produtos);
+        this.dataCadastro = LocalDate.now();
     }
 
     public String getCnpj() {
@@ -39,14 +40,6 @@ public class Fornecedor implements Serializable {
         this.endereco = endereco;
     }
 
-    public Map<String,Produto> getProdutos() {
-        return produtos;
-    }
-
-    public void setProdutos(Map<String,Produto> produtos) {
-        this.produtos = produtos;
-    }
-
     public String getTelefone() {
         return telefone;
     }
@@ -63,7 +56,7 @@ public class Fornecedor implements Serializable {
                 ", nome='" + nome + '\'' +
                 ", endereco='" + endereco + '\'' +
                 ", telefone='" + telefone + '\'' +
-                ", produtos=" + produtos +
+                ", dataCadastro=" + dataCadastro +
                 '}';
     }
 
@@ -79,11 +72,19 @@ public class Fornecedor implements Serializable {
         return Objects.hashCode(cnpj_cpf);
     }
 
-    public String getTipo() {
+    public Tipo_fornecedor getTipo() {
         return tipo;
     }
 
-    public void setTipo(String tipo) {
+    public void setTipo(Tipo_fornecedor tipo) {
         this.tipo = tipo;
+    }
+
+    public LocalDate getDataCadastro() {
+        return dataCadastro;
+    }
+
+    public void setDataCadastro(LocalDate dataCadastro) {
+        this.dataCadastro = dataCadastro;
     }
 }

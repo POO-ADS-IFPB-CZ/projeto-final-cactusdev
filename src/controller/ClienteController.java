@@ -68,4 +68,8 @@ public final class ClienteController {
             }
         }
     }
+
+    public Cliente getClientePorCpf(String cpf){
+       return clienteDao.getList().get(cpf);
+    }
 }
