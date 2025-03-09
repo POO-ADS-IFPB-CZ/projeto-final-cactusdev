@@ -8,14 +8,13 @@ import javax.swing.table.DefaultTableModel;
 
 public class CadastrarProdutos extends JDialog {
     private JPanel contentPane;
-    private JComboBox unidade_medida;
+    private JComboBox<String> unidade_medida;
     private JTextField valor_unitario;
     private JTextField qtd_estoque;
     private JTextField descricao;
     private JButton cancelarButton;
     private JButton confirmarButton;
-    private JComboBox categoria;
-    private JButton buttonOK;
+    private JComboBox<String> categoria;
     private final ProdutoService produtoService;
 
     public CadastrarProdutos(DefaultTableModel tabelaProdutos) {
@@ -26,10 +25,10 @@ public class CadastrarProdutos extends JDialog {
         setTitle("Cadastro de Produtos");
         pack();
         setResizable(false);
+        pack();
+        setLocationRelativeTo(parent);
 
-
-        confirmarButton.addActionListener((e)-> {
-            System.out.println(new ProdutoController().listarProdutos());
+        confirmarButton.addActionListener(e -> {
             String descricaoProduto = descricao.getText();
             String precoUnitario = valor_unitario.getText();
             String unidadeMedida = (String) unidade_medida.getSelectedItem();

@@ -40,14 +40,12 @@ public class Produtos extends JDialog {
         setResizable(false);
         pack();
         setLocationRelativeTo(null);
-
         produtoService.mostrarProdutosNaTabela(tableModel);
 
         buscarButton.addActionListener((e) -> buscarProdutos());
 
         // Evento para sair ao clicar no botão "Sair (ESC)"
         sairESCButton.addActionListener((e) -> fecharJanela());
-
         verificarIsVenda(isVenda);
 
         selecionarButton.addActionListener((e) -> selecionarProduto());
