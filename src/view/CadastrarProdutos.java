@@ -4,7 +4,7 @@ import src.controller.ProdutoController;
 import src.services.ProdutoService;
 
 import javax.swing.*;
-import java.awt.*;
+import javax.swing.table.DefaultTableModel;
 
 public class CadastrarProdutos extends JDialog {
     private JPanel contentPane;
@@ -17,11 +17,13 @@ public class CadastrarProdutos extends JDialog {
     private JComboBox<String> categoria;
     private final ProdutoService produtoService;
 
-    public CadastrarProdutos(Frame parent) {
-        super(parent, "Cadastro de Produtos", true);
+    public CadastrarProdutos(DefaultTableModel tabelaProdutos) {
         produtoService = new ProdutoService(new ProdutoController());
         setContentPane(contentPane);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setModal(true);
+        getRootPane().setDefaultButton(buttonOK);
+        setTitle("Cadastro de Produtos");
+        pack();
         setResizable(false);
         pack();
         setLocationRelativeTo(parent);
@@ -34,14 +36,19 @@ public class CadastrarProdutos extends JDialog {
             String categoriaProduto = (String) categoria.getSelectedItem();
 
             if (produtoService.criarProduto(descricaoProduto, precoUnitario, unidadeMedida, qtdEstoque, categoriaProduto)) {
-                limparCampos();
+                produtoService.atualizarTabela(tabelaProdutos);
+                dispose();
             }
+
+
         });
 
-        cancelarButton.addActionListener(e -> dispose());
+        cancelarButton.addActionListener((e)-> {
+            dispose();
+        });
     }
 
-    private void limparCampos() {
+    private void limparCampos(){
         descricao.setText("");
         valor_unitario.setText("");
         qtd_estoque.setText("");

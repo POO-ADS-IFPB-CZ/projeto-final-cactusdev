@@ -101,7 +101,7 @@
                   <text value="Método de pagamento:"/>
                 </properties>
               </component>
-              <component id="11e6c" class="javax.swing.JComboBox" binding="comboBox1" default-binding="true">
+              <component id="11e6c" class="javax.swing.JComboBox" binding="metodo_pagamento">
                 <constraints>
                   <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="100" height="20"/>
@@ -110,31 +110,33 @@
                 <properties>
                   <font size="14"/>
                   <model>
-                    <item value="Dinheiro"/>
-                    <item value="Cartão de crédito"/>
-                    <item value="Cartão de debito"/>
-                    <item value="Pix"/>
+                    <item value="DINHEIRO"/>
+                    <item value="CREDITO"/>
+                    <item value="DEBITO"/>
+                    <item value="PIX"/>
                   </model>
                 </properties>
               </component>
-              <component id="c8e28" class="javax.swing.JTextField" binding="textField2" default-binding="true">
+              <component id="c8e28" class="javax.swing.JTextField" binding="troco">
                 <constraints>
                   <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="30"/>
                   </grid>
                 </constraints>
                 <properties>
+                  <enabled value="false"/>
                   <font size="20" style="1"/>
                   <text value=""/>
                 </properties>
               </component>
-              <component id="1aec2" class="javax.swing.JTextField" binding="textField1" default-binding="true">
+              <component id="1aec2" class="javax.swing.JTextField" binding="total">
                 <constraints>
                   <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="30"/>
                   </grid>
                 </constraints>
                 <properties>
+                  <enabled value="false"/>
                   <font size="20" style="1"/>
                 </properties>
               </component>
@@ -147,7 +149,7 @@
                   <text value="Valor entregue:"/>
                 </properties>
               </component>
-              <component id="4861b" class="javax.swing.JTextField" binding="textField3" default-binding="true">
+              <component id="4861b" class="javax.swing.JTextField" binding="valor_pago">
                 <constraints>
                   <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="30"/>
