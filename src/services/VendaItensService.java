@@ -1,6 +1,7 @@
 package src.services;
 
 import src.controller.VendaController;
+import src.model.Cliente;
 import src.model.Item_produto;
 import src.model.Produto;
 import src.model.Venda;
@@ -25,6 +26,10 @@ public class VendaItensService {
 
     public void criarNovaVenda() {
         this.venda = new Venda(new GenerateWithDateRandom());
+    }
+
+    public void setClienteVenda(Cliente cliente){
+        this.venda.setCliente(cliente);
     }
 
     public void mostrarVendasNaTabela(DefaultTableModel model) {

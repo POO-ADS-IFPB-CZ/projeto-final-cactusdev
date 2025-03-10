@@ -1,12 +1,12 @@
 package src.view;
 
+import src.model.Cliente;
 import src.model.Item_produto;
 import src.model.Produto;
 import src.services.VendaItensService;
 import src.services.adapters.GenerateWithDateRandom;
 import src.services.formatters.ValorParaDinheiro;
 import src.view.customErrors.Faill;
-import src.view.customErrors.Success;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -24,6 +24,7 @@ public class TelaVenda extends JFrame {
     private JTextField descricao_item;
     private JTable tabela_itens_venda;
     private JTextField total_venda;
+    private JTextField cliente_venda;
     private JButton buttonOK;
     private Produto produtoSelecionado = null;
     DefaultTableModel modelo;
@@ -56,6 +57,23 @@ public class TelaVenda extends JFrame {
                     atualizarInputs(produtoSelecionado);
                     quantidade_item.setEnabled(true);
                 }
+            }
+        });
+
+        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_F2, 0), "abrirClientes");
+
+        getRootPane().getActionMap().put("abrirClientes", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                TelaCliente telaCliente = new TelaCliente(true);
+                telaCliente.setVisible(true);
+                Cliente cliente = telaCliente.getClienteSelecionado();
+                vendaItensService.setClienteVenda(cliente);
+
+                if (cliente != null) cliente_venda.setText(cliente.getNome());
+
+
             }
         });
 

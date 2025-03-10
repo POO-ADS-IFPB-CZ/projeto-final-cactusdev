@@ -44,7 +44,7 @@ public class DaoWithFile<T, ID> implements Dao<T,ID>{
         if(list.containsKey(codigo)){
             list.put(codigo, item);
             saveFile();
-
+            return;
         }
         throw new CustomError();
     }

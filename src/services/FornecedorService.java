@@ -5,6 +5,7 @@ import src.model.Cliente;
 import src.model.Fornecedor;
 import src.model.Produto;
 import src.model.Tipo_fornecedor;
+import src.services.validators.ValidatorCliente;
 import src.services.validators.ValidatorFornecedor;
 import src.services.validators.ValidatorProduto;
 import src.view.customErrors.Faill;
@@ -31,6 +32,20 @@ public class FornecedorService {
         }
     }
 
+    public boolean editarFornecedor(String nome, String endereco,String telefone, String tipo, Fornecedor fornecedor){
+        try{
+            Fornecedor fornecedorEditado = ValidatorFornecedor.validarCamposEditarFornecedor(nome, endereco, telefone, tipo, fornecedor);
+
+            fornecedorController.atualizarFornecedor(fornecedorEditado);
+
+            return true;
+
+        }catch (IllegalArgumentException e){
+            Faill.show(null, e.getMessage());
+            return false;
+        }
+    }
+
     public void mostrarFornecedoresNaTabela(DefaultTableModel model) {
         Collection<Fornecedor> fornecedores = fornecedorController.listarFornecedores();
 
@@ -40,6 +55,7 @@ public class FornecedorService {
         for (Fornecedor fornecedor : fornecedores) {
             model.addRow(new Object[]{
                     fornecedor.getCnpj(),
+                    fornecedor.getTipo(),
                     fornecedor.getNome(),
                     fornecedor.getTelefone(),
                     fornecedor.getEndereco(),

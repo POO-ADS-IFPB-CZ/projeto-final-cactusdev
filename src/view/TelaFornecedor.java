@@ -4,7 +4,6 @@ import src.model.Fornecedor;
 import src.services.FornecedorService;
 import src.services.filters.FornecedorFilters;
 import src.view.customErrors.Faill;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -13,7 +12,7 @@ import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-public class TelaFornecedor extends JFrame {
+public class TelaFornecedor extends JDialog {
     private JPanel contentPane;
     private JButton alterarFornecedorButton;
     private JButton cadastrarFornecedorButton;
@@ -32,26 +31,31 @@ public class TelaFornecedor extends JFrame {
 
     public TelaFornecedor(boolean isAlterarProduto) {
         fornecedorService = new FornecedorService();
+        setModal(true);
         setContentPane(contentPane);
         setTitle("Fornecedor");
         getRootPane().setDefaultButton(buttonOK);
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        pack();
+        setSize(Toolkit.getDefaultToolkit().getScreenSize());
+        setLocationRelativeTo(null);
 
         fornecedorService.mostrarFornecedoresNaTabela(tableModel);
 
         cadastrarFornecedorButton.addActionListener((e -> {
             CadastrarFornecedor cadastrarFornecedor = new CadastrarFornecedor(tableModel);
+            cadastrarFornecedor.setLocationRelativeTo(this);
             cadastrarFornecedor.setVisible(true);
         }));
-
-        verificarIsAlterarProduto(isAlterarProduto);
 
         buscarButton.addActionListener((e -> buscarFornecedores()));
 
         sairButton.addActionListener((e) -> fecharJanela());
 
-        selecionarButton.addActionListener((e -> selecionarFornecedor()));
+        verificarIsAlterarProduto(isAlterarProduto);
+
+        selecionarButton.addActionListener((e -> verificarAndSelecionarFornecedor()));
+
+        alterarFornecedorButton.addActionListener((e) -> abrirEdicaoFornecedor());
 
         KeyAdapter keyAdapter = new KeyAdapter() {
             @Override
@@ -65,6 +69,8 @@ public class TelaFornecedor extends JFrame {
                     buscarFornecedores();
                 } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     fecharJanela();
+                } else if (e.getKeyCode() == KeyEvent.VK_F5) {
+                    abrirEdicaoFornecedor();
                 }
             }
         };
@@ -78,24 +84,6 @@ public class TelaFornecedor extends JFrame {
 
     private void fecharJanela() {
         dispose();
-    }
-
-    private void verificarIsAlterarProduto(boolean isAlterarProduto){
-        if (!isAlterarProduto){
-            selecionarButton.setVisible(false);
-        }else{
-            alterarFornecedorButton.setVisible(false);
-
-            //evento para selecionar produto na tabela, só funciona se estiver na venda
-            tabela_fornecedores.addKeyListener(new KeyAdapter() {
-                @Override
-                public void keyPressed(KeyEvent e) {
-                    if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                        selecionarFornecedor();
-                    }
-                }
-            });
-        }
     }
 
     private void buscarFornecedores() {
@@ -116,7 +104,29 @@ public class TelaFornecedor extends JFrame {
         }
     }
 
-    private void selecionarFornecedor() {
+    private void verificarIsAlterarProduto(boolean isAlterarProduto) {
+        if (!isAlterarProduto) {
+            selecionarButton.setVisible(false);
+        } else {
+            alterarFornecedorButton.setVisible(false);
+            tabela_fornecedores.addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                        verificarAndSelecionarFornecedor();
+                    }
+                }
+            });
+        }
+    }
+
+    private void verificarAndSelecionarFornecedor() {
+        if (selecionarFornecedor()) {
+            fecharJanela();
+        }
+    }
+
+    private boolean selecionarFornecedor() {
         int row = tabela_fornecedores.getSelectedRow();
         if (row != -1) {
             String cnpj = (String) tabela_fornecedores.getValueAt(row, 0);
@@ -126,9 +136,17 @@ public class TelaFornecedor extends JFrame {
                 throw new RuntimeException();
             }
 
-            fecharJanela();
+            return true;
         } else {
             Faill.show(null, "Selecione um fornecedor válido");
+            return false;
+        }
+    }
+
+    private void abrirEdicaoFornecedor() {
+        if (selecionarFornecedor()) {
+            FornecedorAlterar fornecedorAlterar = new FornecedorAlterar(fornecedorSelecionado, tableModel);
+            fornecedorAlterar.setVisible(true);
         }
     }
 
@@ -137,24 +155,22 @@ public class TelaFornecedor extends JFrame {
     }
 
     public static void main(String[] args) {
-        TelaFornecedor dialog = new TelaFornecedor(true);
-        dialog.pack();
+        TelaFornecedor dialog = new TelaFornecedor(false);
         dialog.setVisible(true);
     }
 
     private void createUIComponents() {
         tabela_fornecedores = new JTable();
-        String[] colunas = {"CNPJ", "Nome", "Telefone", "Endereço", "Data de cadastro"};
+        String[] colunas = {"CNPJ","Tipo_pessoa", "Nome", "Telefone", "Endereço", "Data de cadastro"};
 
         tableModel = new DefaultTableModel(colunas, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // Impede a edição das células
+                return false;
             }
         };
 
         tabela_fornecedores.setModel(tableModel);
-
         rowSorter = new TableRowSorter<>(tableModel);
         tabela_fornecedores.setRowSorter(rowSorter);
     }

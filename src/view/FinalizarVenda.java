@@ -1,5 +1,6 @@
 package src.view;
 
+import src.model.Cliente;
 import src.services.VendaItensService;
 import src.services.formatters.ValorParaDinheiro;
 import src.view.customErrors.Faill;
@@ -47,6 +48,8 @@ public class FinalizarVenda extends JDialog {
                 }
             }
         });
+
+        buttonCancel.addActionListener((e)-> dispose());
 
         buttonOK.addActionListener((e)-> {
             try{

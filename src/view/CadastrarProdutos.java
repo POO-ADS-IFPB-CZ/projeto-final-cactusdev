@@ -21,12 +21,11 @@ public class CadastrarProdutos extends JDialog {
         produtoService = new ProdutoService(new ProdutoController());
         setContentPane(contentPane);
         setModal(true);
-        getRootPane().setDefaultButton(buttonOK);
+        getRootPane().setDefaultButton(confirmarButton);
         setTitle("Cadastro de Produtos");
         pack();
         setResizable(false);
-        pack();
-        setLocationRelativeTo(parent);
+        setLocationRelativeTo(null);
 
         confirmarButton.addActionListener(e -> {
             String descricaoProduto = descricao.getText();

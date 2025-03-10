@@ -10,6 +10,7 @@ import src.view.customErrors.Success;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -37,9 +38,11 @@ public class Produtos extends JDialog {
         setModal(true);
         setTitle("Produtos");
         getRootPane().setDefaultButton(buttonOK);
-        setResizable(false);
         pack();
+        setSize(Toolkit.getDefaultToolkit().getScreenSize());
         setLocationRelativeTo(null);
+
+
         produtoService.mostrarProdutosNaTabela(tableModel);
 
         buscarButton.addActionListener((e) -> buscarProdutos());
@@ -152,9 +155,8 @@ public class Produtos extends JDialog {
 
     public static void main(String[] args) {
         Produtos dialog = new Produtos(true);
-        dialog.pack();
         dialog.setVisible(true);
-        System.exit(0);
+        //System.exit(0);
     }
 
     private void createUIComponents() {

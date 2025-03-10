@@ -145,6 +145,7 @@
               <component id="e2750" class="javax.swing.JTable" binding="tabela_fornecedores" custom-create="true">
                 <constraints/>
                 <properties>
+                  <autoResizeMode value="4"/>
                   <font size="18"/>
                   <rowHeight value="35"/>
                 </properties>
