@@ -68,4 +68,8 @@ public final class VendaController {
             }
         }
     }
+
+    public Venda getVendaPorCodigo(String codigo){
+        return vendaDao.getList().get(codigo);
+    }
 }

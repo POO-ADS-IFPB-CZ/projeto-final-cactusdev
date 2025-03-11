@@ -1,7 +1,9 @@
 package src.services;
 
 import src.controller.ProdutoController;
+import src.model.Fornecedor;
 import src.model.Produto;
+import src.services.formatters.ValorParaDinheiro;
 import src.services.validators.ValidatorProduto;
 import src.view.customErrors.Faill;
 
@@ -10,14 +12,14 @@ import java.util.Collection;
 
 public class ProdutoService {
     private ProdutoController produtoController;
-    public ProdutoService(ProdutoController produtoController){
-        this.produtoController = produtoController;
+    public ProdutoService(){
+        this.produtoController = new ProdutoController();
     }
 
-    public boolean criarProduto(String descricao, String precoUnitario, String unidadeMedida,String qtdEstoque,
-String categoria){
+    public boolean criarProduto(String descricao, String precoUnitario, String unidadeMedida, String qtdEstoque,
+                                String categoria, Fornecedor fornecedor){
         try{
-            Produto produto = ValidatorProduto.validarCamposCriarProduto(null,descricao,precoUnitario,unidadeMedida,qtdEstoque,categoria);
+            Produto produto = ValidatorProduto.validarCamposCriarProduto(null,descricao,precoUnitario,unidadeMedida,qtdEstoque,categoria, fornecedor);
 
             produtoController.addProduto(produto);
             return true;
@@ -25,6 +27,24 @@ String categoria){
             Faill.show(null, e.getMessage());
             return  false;
     }
+    }
+
+    public boolean editarProduto(String descricao, String precoUnitario, String unidadeMedida, String qtdEstoque,
+                                String categoria, Fornecedor fornecedor, Produto produto){
+        try{
+            Produto produtoEditado = ValidatorProduto.validarCamposEditarProduto(descricao,precoUnitario,unidadeMedida,qtdEstoque,categoria, fornecedor, produto);
+
+            produtoController.atualizarProduto(produtoEditado);
+
+            return true;
+        } catch (IllegalArgumentException e) {
+            Faill.show(null, e.getMessage());
+            return  false;
+        }
+    }
+
+    public Produto getProdutoPorCodigo(String codigo){
+        return produtoController.pegarProdutoPorCodigo(codigo);
     }
 
     public void mostrarProdutosNaTabela(DefaultTableModel model) {
@@ -37,10 +57,11 @@ String categoria){
             model.addRow(new Object[]{
                     produto.getCodigo(),
                     produto.getDescricao(),
-                    produto.getPreco(),
+                    ValorParaDinheiro.converter(produto.getPreco(), "pt", "BR"),
                     produto.getQtdEstoque(),
                     produto.getCategoria(),
-                    produto.getMedida()
+                    produto.getMedida(),
+                    produto.getFornecedor().getNome()
             });
         }
     }

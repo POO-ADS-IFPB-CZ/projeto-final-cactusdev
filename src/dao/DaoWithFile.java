@@ -69,6 +69,9 @@ public class DaoWithFile<T, ID> implements Dao<T,ID>{
         try(ObjectOutputStream out = new ObjectOutputStream(
                 new FileOutputStream(arquivo))){
             out.writeObject(list);
+            getItensList();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 
