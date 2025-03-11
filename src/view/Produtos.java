@@ -44,7 +44,7 @@ public class Produtos extends JDialog {
         produtoService.mostrarProdutosNaTabela(tableModel);
 
         cadastrarProdutoButton.addActionListener((e -> {
-            CadastrarProdutos cadastrarProduto = new CadastrarProdutos(tableModel);
+            CadastrarProdutos cadastrarProduto = new CadastrarProdutos(tableModel, produtoService);
             cadastrarProduto.setLocationRelativeTo(this);
             cadastrarProduto.setVisible(true);
         }));

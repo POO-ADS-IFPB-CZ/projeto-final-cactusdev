@@ -20,11 +20,9 @@ public class CadastrarProdutos extends JDialog {
     private JComboBox<String> categoria;
     private JTextField input_fornecedor;
     private JButton adicionarF2Button;
-    private final ProdutoService produtoService;
     private Fornecedor fornecedorSelecionado = null;
 
-    public CadastrarProdutos(DefaultTableModel tabelaProdutos) {
-        produtoService = new ProdutoService();
+    public CadastrarProdutos(DefaultTableModel tabelaProdutos, ProdutoService produtoService) {
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(confirmarButton);
