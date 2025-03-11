@@ -17,7 +17,7 @@ public final class ProdutoController {
 
     public ProdutoController(){
         try {
-            this.produtoDao = new DaoWithFile<Produto, String>("Produtos");
+            this.produtoDao = new DaoWithFile<>("Produtos");
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -74,8 +74,8 @@ public final class ProdutoController {
         }
     }
 
-    public Optional<Produto> pegarProdutoPorCodigo(String codigo){
-        return Optional.ofNullable(produtoDao.getList().get(codigo));
+    public Produto pegarProdutoPorCodigo(String codigo){
+        return produtoDao.getList().get(codigo);
     }
 
     public Collection<Produto> listarProdutos(){

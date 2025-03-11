@@ -1,12 +1,12 @@
 package src.view;
 
+import src.model.Cliente;
 import src.model.Item_produto;
 import src.model.Produto;
 import src.services.VendaItensService;
 import src.services.adapters.GenerateWithDateRandom;
 import src.services.formatters.ValorParaDinheiro;
 import src.view.customErrors.Faill;
-import src.view.customErrors.Success;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -24,6 +24,7 @@ public class TelaVenda extends JFrame {
     private JTextField descricao_item;
     private JTable tabela_itens_venda;
     private JTextField total_venda;
+    private JTextField cliente_venda;
     private JButton buttonOK;
     private Produto produtoSelecionado = null;
     DefaultTableModel modelo;
@@ -59,6 +60,35 @@ public class TelaVenda extends JFrame {
             }
         });
 
+        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_F2, 0), "abrirClientes");
+
+        getRootPane().getActionMap().put("abrirClientes", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                TelaCliente telaCliente = new TelaCliente(true);
+                telaCliente.setVisible(true);
+                Cliente cliente = telaCliente.getClienteSelecionado();
+                vendaItensService.setClienteVenda(cliente);
+
+                if (cliente != null) cliente_venda.setText(cliente.getNome());
+
+
+            }
+        });
+
+        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0), "cancelarVenda");
+
+        getRootPane().getActionMap().put("cancelarVenda", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (vendaItensService.cancelarVendaAtual(modelo)) {
+                    zerarCampos();
+                }
+            }
+        });
+
         deletarItemTabela();
 
         eventoAtualizaQuantidadeItem();
@@ -69,10 +99,13 @@ public class TelaVenda extends JFrame {
         getRootPane().getActionMap().put("finalizarVenda", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                FinalizarVenda telaFinalizar = new FinalizarVenda(vendaItensService, modelo);
+                // Passando a instância de TelaVenda corretamente
+                FinalizarVenda telaFinalizar = new FinalizarVenda(vendaItensService, modelo, TelaVenda.this);
                 telaFinalizar.setVisible(true);
             }
         });
+
+
 
 
 
@@ -98,7 +131,7 @@ public class TelaVenda extends JFrame {
         setVisible(true);
     }
 
-    public void atualizarInputs(Produto produto){
+    private void atualizarInputs(Produto produto){
         descricao_item.setText(produto.getDescricao());
         preco_unitario_item.setText(ValorParaDinheiro.converter(produto.getPreco(), "pt", "BR"));
         quantidade_item.setText("1");
@@ -178,7 +211,7 @@ public class TelaVenda extends JFrame {
                     String codItem = (String) tabela_itens_venda.getValueAt(linhaSelecionada, 0);
 
                     try {
-                        int quantidade = Integer.parseInt(valor);
+                        double quantidade = Double.parseDouble(valor);
 
                         if (quantidade <= 0) {
                             throw new NumberFormatException(); // Impede valores negativos ou zero
@@ -205,13 +238,14 @@ public class TelaVenda extends JFrame {
 
     }
 
-    private void zerarCampos(){
+    public void zerarCampos(){
         descricao_item.setText("SEM DESCRIÇÃO");
         preco_unitario_item.setText("0.00");
         quantidade_item.setEnabled(false);
         quantidade_item.setText("");
         total_item.setText("0.00");
         unidade_item.setText("NENHUMA");
+        atualizarTotalVenda();
     }
 
     private void atualizarTotalVenda(){

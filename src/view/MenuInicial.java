@@ -59,7 +59,6 @@ public class MenuInicial extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 TelaFornecedor fornecedorTela = new TelaFornecedor(false);
                 fornecedorTela.setVisible(true);
-                adicionarFechamentoESC(fornecedorTela);
             }
         });
 
@@ -67,17 +66,6 @@ public class MenuInicial extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.exit(0);
-            }
-        });
-    }
-
-    private void adicionarFechamentoESC(JFrame frame) {
-        frame.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    frame.dispose();
-                }
             }
         });
     }

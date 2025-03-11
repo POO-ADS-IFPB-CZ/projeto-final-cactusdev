@@ -1,68 +1,87 @@
 package src.view;
 
+import src.model.Fornecedor;
+import src.services.FornecedorService;
+import src.view.customErrors.Faill;
+
 import javax.swing.*;
-import java.awt.event.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.event.KeyEvent;
+import java.util.Objects;
 
 public class FornecedorAlterar extends JDialog {
     private JPanel contentPane;
-    private JButton buttonOK;
     private JButton buttonCancel;
-    private JTextField textField1;
-    private JTextField textField3;
-    private JTextField textField4;
-    private JTextField textField5;
-    private JTextField textField6;
-    private JButton apagarButton;
+    private JTextField input_cnpj;
+    private JTextField input_nome;
+    private JTextField input_telefone;
+    private JTextField input_endereco;
+    private JComboBox tipo_pessoa;
+    private JButton sairESCButton;
     private JButton alterarButton;
-    private JComboBox comboBox1;
+    private JLabel data_cadastro;
+    private final Fornecedor fornecedor;
+    private final FornecedorService fornecedorService;
 
-    public FornecedorAlterar() {
+    public FornecedorAlterar(Fornecedor fornecedor, DefaultTableModel tableModel) {
+        fornecedorService = new FornecedorService();
+        this.fornecedor = fornecedor;
         setContentPane(contentPane);
         setModal(true);
-        getRootPane().setDefaultButton(buttonOK);
+        pack();
+        setLocationRelativeTo(null);
+        setResizable(false);
 
-        buttonOK.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onOK();
-            }
-        });
+        setInformacoesFornecedor();
 
-        buttonCancel.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onCancel();
-            }
-        });
+        eventoEditarFornecedor(tableModel);
+        eventoFecharJanela();
+        eventoTeclaESC();
 
-        // call onCancel() when cross is clicked
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                onCancel();
-            }
-        });
-
-        // call onCancel() on ESCAPE
-        contentPane.registerKeyboardAction(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onCancel();
-            }
-        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        sairESCButton.addActionListener((e) -> fecharJanela());
     }
 
-    private void onOK() {
-        // add your code here
+    private void eventoEditarFornecedor(DefaultTableModel tableModel) {
+        alterarButton.addActionListener((e) -> {
+            String nomeInput = input_nome.getText();
+            String telefoneInput = input_telefone.getText();
+            String enderecoInput = input_endereco.getText();
+            String tipo = (String) tipo_pessoa.getSelectedItem();
+
+            boolean foiModificado = !nomeInput.equals(fornecedor.getNome()) ||
+                    !telefoneInput.equals(fornecedor.getTelefone()) ||
+                    !enderecoInput.equals(fornecedor.getEndereco()) ||
+                    !Objects.equals(tipo_pessoa.getSelectedItem(), fornecedor.getTipo().toString());
+
+            if (foiModificado) {
+                if (fornecedorService.editarFornecedor(nomeInput,enderecoInput, telefoneInput, tipo, fornecedor)) {
+                    fornecedorService.mostrarFornecedoresNaTabela(tableModel);
+                }
+            } else {
+                Faill.show(this, "Nenhuma alteração foi feita!");
+            }
+        });
+    }
+
+    private void eventoFecharJanela() {
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+    }
+
+    private void eventoTeclaESC() {
+        contentPane.registerKeyboardAction((e) -> fecharJanela(),
+                KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+                JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+    }
+
+    private void fecharJanela() {
         dispose();
     }
 
-    private void onCancel() {
-        // add your code here if necessary
-        dispose();
-    }
-
-    public static void main(String[] args) {
-        FornecedorAlterar dialog = new FornecedorAlterar();
-        dialog.pack();
-        dialog.setVisible(true);
-        System.exit(0);
+    private void setInformacoesFornecedor() {
+        input_cnpj.setText(fornecedor.getCnpj());
+        input_nome.setText(fornecedor.getNome());
+        input_telefone.setText(fornecedor.getTelefone());
+        input_endereco.setText(fornecedor.getEndereco());
+        data_cadastro.setText(fornecedor.getDataCadastro().toString());
     }
 }

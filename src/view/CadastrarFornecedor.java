@@ -20,12 +20,13 @@ public class CadastrarFornecedor extends JDialog {
 
     public CadastrarFornecedor(DefaultTableModel tableModel) {
         fornecedorService = new FornecedorService();
+        setModal(true);
         setContentPane(contentPane);
         setTitle("Cadastro de Fornecedor");
         getRootPane().setDefaultButton(buttonOK);
         pack();
-        setLocationRelativeTo(null);
         setResizable(false);
+        setLocationRelativeTo(null);
 
         confirmarButton.addActionListener((e)-> {
             String nomeInput = nome.getText();

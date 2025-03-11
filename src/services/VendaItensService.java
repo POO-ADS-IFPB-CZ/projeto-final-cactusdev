@@ -1,6 +1,8 @@
 package src.services;
 
+import src.controller.ProdutoController;
 import src.controller.VendaController;
+import src.model.Cliente;
 import src.model.Item_produto;
 import src.model.Produto;
 import src.model.Venda;
@@ -17,14 +19,30 @@ import java.util.Collection;
 public class VendaItensService {
     private Venda venda;
     private final VendaController vendaController;
+    private final ProdutoController produtoController;
 
     public VendaItensService() {
         criarNovaVenda();
         vendaController = new VendaController();
+        produtoController = new ProdutoController();
     }
 
-    public void criarNovaVenda() {
+    private void criarNovaVenda() {
         this.venda = new Venda(new GenerateWithDateRandom());
+    }
+
+    public boolean cancelarVendaAtual(DefaultTableModel tableModel){
+        if (!this.venda.getItens().isEmpty()){
+            criarNovaVenda();
+            mostrarVendasNaTabela(tableModel);
+            return true;
+        }
+
+        return false;
+    }
+
+    public void setClienteVenda(Cliente cliente){
+        this.venda.setCliente(cliente);
     }
 
     public void mostrarVendasNaTabela(DefaultTableModel model) {
@@ -80,7 +98,7 @@ public class VendaItensService {
         mostrarVendasNaTabela(tableModel);
     }
 
-    public void atualizarQtdItem(String codItem, int qtd) throws IllegalArgumentException{
+    public void atualizarQtdItem(String codItem, double qtd) throws IllegalArgumentException{
         Item_produto itemProduto = venda.getItem(codItem);
         Item_produto itemExist = venda.itemExist(itemProduto.getProduto().getCodigo());
 
@@ -97,8 +115,17 @@ public class VendaItensService {
             ValidatorVenda.verificarFinalizarVenda(metodoPagamento, valorPagoStr, totalVenda);
             venda.setMetodoPagamento(metodoPagamento);
             this.vendaController.adicionarVenda(this.venda);
+            atualizarQtdEstoqueAposVenda();
             criarNovaVenda();
             mostrarVendasNaTabela(tableModel);
+    }
+
+    private void atualizarQtdEstoqueAposVenda(){
+        this.venda.getItens().forEach((item)->{
+            Produto produto = item.getProduto();
+            produto.setQtdEstoque(produto.getQtdEstoque() - item.getQuantidade());
+            produtoController.atualizarProduto(produto);
+        });
     }
 }
 

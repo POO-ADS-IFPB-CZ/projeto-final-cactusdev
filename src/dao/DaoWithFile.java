@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class DaoWithFile<T, ID> implements Dao<T,ID>{
     private final File arquivo;
-    private final Map<ID, T> list;
+    private Map<ID, T> list;
 
     public DaoWithFile(String name_file) throws IOException, ClassNotFoundException {
         arquivo = new File(name_file);
@@ -22,6 +22,7 @@ public class DaoWithFile<T, ID> implements Dao<T,ID>{
 
     @Override
     public void addToList(ID codigo, T item) throws IOException, CustomError{
+        readItensToList();
         if (list.containsKey(codigo)){
             throw new CustomError();
         }
@@ -31,6 +32,7 @@ public class DaoWithFile<T, ID> implements Dao<T,ID>{
 
     @Override
     public void removeToList(ID codigo) throws IOException, CustomError{
+        readItensToList();
         if (list.containsKey(codigo)){
             list.remove(codigo);
             saveFile();
@@ -41,10 +43,11 @@ public class DaoWithFile<T, ID> implements Dao<T,ID>{
 
     @Override
     public void updateItemOnList(ID codigo, T item) throws IOException, CustomError {
+        readItensToList();
         if(list.containsKey(codigo)){
             list.put(codigo, item);
             saveFile();
-
+            return;
         }
         throw new CustomError();
     }
@@ -61,6 +64,14 @@ public class DaoWithFile<T, ID> implements Dao<T,ID>{
             return new HashMap<>();
         } catch (EOFException e) {
             return new HashMap<>();
+        }
+    }
+
+    private void readItensToList(){
+        try {
+            this.list = getItensList();
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 

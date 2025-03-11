@@ -1,5 +1,6 @@
 package src.services.validators;
 
+import src.services.formatters.ValorParaDinheiro;
 import src.view.customErrors.Faill;
 
 import java.awt.*;
@@ -17,7 +18,7 @@ public class ValidatorVenda {
 
         double valorPago;
         try {
-            valorPago = Double.parseDouble(valorPagoStr.trim());
+            valorPago = Double.parseDouble(ValorParaDinheiro.converterParaDouble(valorPagoStr.trim()));
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Valor pago inválido");
         }

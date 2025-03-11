@@ -4,6 +4,7 @@ import src.model.Cliente;
 import src.services.ClienteService;
 import src.services.filters.ClienteFilters;
 import src.view.customErrors.Faill;
+import src.view.customErrors.Success;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -13,7 +14,7 @@ import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-public class TelaCliente extends JFrame {
+public class TelaCliente extends JDialog {
     private JPanel contentPane;
     private JButton cadastrarClienteButton;
     private JButton alterarClienteButton;
@@ -32,11 +33,13 @@ public class TelaCliente extends JFrame {
 
     public TelaCliente(boolean isVenda) {
         clienteService = new ClienteService();
+        setModal(true);
         setContentPane(contentPane);
         setTitle("Cliente");
         getRootPane().setDefaultButton(buttonOK);
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        pack();
+        setSize(Toolkit.getDefaultToolkit().getScreenSize());
+        setLocationRelativeTo(null);
 
         clienteService.mostrarClientesNaTabela(tableModel);
 
@@ -51,13 +54,16 @@ public class TelaCliente extends JFrame {
 
         verificarIsVenda(isVenda);
 
-        selecionarButton.addActionListener((e -> selecionarCliente()));
+        selecionarButton.addActionListener((e -> {
+            verificarAndSelecionarCliente();
+        }));
+
+        alterarClienteButton.addActionListener((e)-> abrirEdicaoCliente());
 
         KeyAdapter keyAdapter = new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-
                     if (e.getComponent() == nome) {
                         opcao_busca.setSelectedItem("NOME");
                     } else if (e.getComponent() == cpf) {
@@ -66,6 +72,8 @@ public class TelaCliente extends JFrame {
                     buscarClientes();
                 } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     fecharJanela();
+                } else if (e.getKeyCode() == KeyEvent.VK_F5) {
+                    abrirEdicaoCliente();
                 }
             }
         };
@@ -99,25 +107,30 @@ public class TelaCliente extends JFrame {
         }
     }
 
+    public void verificarAndSelecionarCliente(){
+        if (selecionarCliente(false)) {
+            fecharJanela();
+        };
+    }
+
     private void verificarIsVenda(boolean isVenda){
         if (!isVenda){
             selecionarButton.setVisible(false);
         }else{
             alterarClienteButton.setVisible(false);
 
-            //evento para selecionar produto na tabela, só funciona se estiver na venda
             tabela_clientes.addKeyListener(new KeyAdapter() {
                 @Override
                 public void keyPressed(KeyEvent e) {
                     if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                        selecionarCliente();
+                        verificarAndSelecionarCliente();
                     }
                 }
             });
         }
     }
 
-    private void selecionarCliente() {
+    private boolean selecionarCliente(boolean isEdit) {
         int row = tabela_clientes.getSelectedRow();
         if (row != -1) {
             String cpf = (String) tabela_clientes.getValueAt(row, 1);
@@ -127,15 +140,23 @@ public class TelaCliente extends JFrame {
                 throw new RuntimeException();
             }
 
-            if (!clienteSelecionado.getAtivo()){
+            if (!clienteSelecionado.getAtivo() && !isEdit){
                 Faill.show(null, "Selecione um cliente ativo.");
                 throw new RuntimeException();
             }
 
-            fecharJanela();
+            return true;
 
         } else {
             Faill.show(null, "Selecione um cliente válido");
+            return false;
+        }
+    }
+
+    private void abrirEdicaoCliente() {
+        if (selecionarCliente(true)) {
+            ClienteAlterar clienteAlterar = new ClienteAlterar(clienteSelecionado, tableModel);
+            clienteAlterar.setVisible(true);
         }
     }
 
@@ -145,7 +166,6 @@ public class TelaCliente extends JFrame {
 
     public static void main(String[] args) {
         TelaCliente dialog = new TelaCliente(true);
-        dialog.pack();
         dialog.setVisible(true);
     }
 
@@ -156,7 +176,7 @@ public class TelaCliente extends JFrame {
         tableModel = new DefaultTableModel(colunas, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // Impede a edição das células
+                return false;
             }
         };
 
@@ -167,28 +187,19 @@ public class TelaCliente extends JFrame {
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-                // Verifica se o valor não é nulo
                 if (value != null) {
-                    String status = value.toString().trim(); // Converte para string e remove espaços
-
-                    // Define a cor do texto com base no status
+                    String status = value.toString().trim();
                     if ("Ativo".equalsIgnoreCase(status)) {
                         cell.setForeground(Color.GREEN);
                     } else {
                         cell.setForeground(Color.RED);
                     }
                 }
-
                 return cell;
             }
         });
 
-
-
-
         rowSorter = new TableRowSorter<>(tableModel);
         tabela_clientes.setRowSorter(rowSorter);
     }
-
-
 }

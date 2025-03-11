@@ -20,14 +20,32 @@ public class ClienteService {
 
     public boolean cadastrarCliente(String cpf, String nome, String telefone, Component parent){
         try{
-            Cliente cliente = ValidatorCliente.validarCamposCriarCliente(parent,nome,cpf, telefone);
+            Cliente cliente = ValidatorCliente.validarCamposCriarCliente(nome,cpf, telefone);
 
             clienteController.addCliente(cliente);
             return  true;
-        } catch (RuntimeException e) {
+        } catch (IllegalArgumentException e) {
             Faill.show(null, e.getMessage());
             return false;
         }
+    }
+
+    public boolean editarCliente(String nome, String telefone, String ativo, Cliente cliente){
+        try{
+            Cliente clienteEditado = ValidatorCliente.validarCamposEditarCliente(nome, ativo, telefone, cliente);
+
+            clienteController.atualizarCliente(clienteEditado);
+
+            return true;
+
+        }catch (IllegalArgumentException e){
+            Faill.show(null, e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean apagarCliente(String cpf){
+        return clienteController.removeCliente(cpf);
     }
 
     public void mostrarClientesNaTabela(DefaultTableModel model) {

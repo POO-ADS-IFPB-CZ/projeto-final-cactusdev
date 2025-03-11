@@ -1,10 +1,13 @@
 package src.view;
 
 import src.controller.ProdutoController;
+import src.model.Fornecedor;
 import src.services.ProdutoService;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 public class CadastrarProdutos extends JDialog {
     private JPanel contentPane;
@@ -15,18 +18,18 @@ public class CadastrarProdutos extends JDialog {
     private JButton cancelarButton;
     private JButton confirmarButton;
     private JComboBox<String> categoria;
-    private final ProdutoService produtoService;
+    private JTextField input_fornecedor;
+    private JButton adicionarF2Button;
+    private Fornecedor fornecedorSelecionado = null;
 
-    public CadastrarProdutos(DefaultTableModel tabelaProdutos) {
-        produtoService = new ProdutoService(new ProdutoController());
+    public CadastrarProdutos(DefaultTableModel tabelaProdutos, ProdutoService produtoService) {
         setContentPane(contentPane);
         setModal(true);
-        getRootPane().setDefaultButton(buttonOK);
+        getRootPane().setDefaultButton(confirmarButton);
         setTitle("Cadastro de Produtos");
         pack();
         setResizable(false);
-        pack();
-        setLocationRelativeTo(parent);
+        setLocationRelativeTo(null);
 
         confirmarButton.addActionListener(e -> {
             String descricaoProduto = descricao.getText();
@@ -35,7 +38,7 @@ public class CadastrarProdutos extends JDialog {
             String qtdEstoque = qtd_estoque.getText();
             String categoriaProduto = (String) categoria.getSelectedItem();
 
-            if (produtoService.criarProduto(descricaoProduto, precoUnitario, unidadeMedida, qtdEstoque, categoriaProduto)) {
+            if (produtoService.criarProduto(descricaoProduto, precoUnitario, unidadeMedida, qtdEstoque, categoriaProduto, fornecedorSelecionado)) {
                 produtoService.atualizarTabela(tabelaProdutos);
                 dispose();
             }
@@ -43,8 +46,37 @@ public class CadastrarProdutos extends JDialog {
 
         });
 
+        eventosAdicionarFornecedor();
+
         cancelarButton.addActionListener((e)-> {
             dispose();
+        });
+    }
+
+    private void adicionarFornecedor(){
+        TelaFornecedor telaFornecedor = new TelaFornecedor(true);
+        telaFornecedor.setLocationRelativeTo(this);
+        telaFornecedor.setVisible(true);
+
+        fornecedorSelecionado = telaFornecedor.getFornecedorSelecionado();
+        if (fornecedorSelecionado != null){
+            input_fornecedor.setText(fornecedorSelecionado.getNome());
+        }
+    }
+
+    private void eventosAdicionarFornecedor(){
+        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_F2, 0), "adicionarFornecedor");
+
+        getRootPane().getActionMap().put("adicionarFornecedor", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                adicionarFornecedor();
+            }
+        });
+
+        adicionarF2Button.addActionListener((e)-> {
+            adicionarFornecedor();
         });
     }
 

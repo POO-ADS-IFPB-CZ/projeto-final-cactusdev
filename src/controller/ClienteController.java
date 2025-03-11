@@ -32,14 +32,17 @@ public final class ClienteController {
         }
     }
 
-    public void removeCliente(String cpf) {
+    public boolean removeCliente(String cpf) {
         try {
              clienteDao.removeToList(cpf);
              Success.show(null, "Cliente removido com sucesso.");
+             return  true;
         } catch (IOException e) {
             Faill.show(null, "Erro interno: " + e.getMessage());
+            return false;
         } catch (CustomError e) {
             Faill.show(null, "Cliente não encontrado.");
+            return false;
         }
     }
 

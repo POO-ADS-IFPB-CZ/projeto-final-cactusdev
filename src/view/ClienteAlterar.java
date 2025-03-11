@@ -1,67 +1,87 @@
 package src.view;
 
+import src.model.Cliente;
+import src.services.ClienteService;
+import src.view.customErrors.Faill;
+
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
 
 public class ClienteAlterar extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
-    private JTextField textField1;
-    private JTextField textField2;
-    private JTextField textField3;
-    private JTextField textField4;
-    private JComboBox comboBox1;
+    private JTextField cpf;
+    private JTextField nome;
+    private JTextField telefone;
+    private JComboBox ativo;
     private JButton apagarButton;
     private JButton alterarButton;
+    private JLabel data_cadastro;
+    private final Cliente cliente;
+    private final ClienteService clienteService;
 
-    public ClienteAlterar() {
+    public ClienteAlterar(Cliente cliente, DefaultTableModel tableModel) {
+        clienteService = new ClienteService();
+        this.cliente = cliente;
         setContentPane(contentPane);
         setModal(true);
-        getRootPane().setDefaultButton(buttonOK);
+        pack();
+        setLocationRelativeTo(null);
+        setResizable(false);
 
-        buttonOK.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onOK();
-            }
-        });
+        setIformacoesCliente();
 
-        buttonCancel.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onCancel();
-            }
-        });
+        eventoEditarCliente(tableModel);
+        eventoFecharJanela();
+        eventoTeclaESC();
 
-        // call onCancel() when cross is clicked
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                onCancel();
-            }
-        });
-
-        // call onCancel() on ESCAPE
-        contentPane.registerKeyboardAction(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onCancel();
-            }
-        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        // Fechar ao clicar no botão Cancelar
+        buttonCancel.addActionListener((e) -> fecharJanela());
     }
 
-    private void onOK() {
-        // add your code here
+    private void eventoEditarCliente(DefaultTableModel tableModel) {
+        alterarButton.addActionListener((e) -> {
+            String nomeInput = nome.getText();
+            String telefoneInput = telefone.getText();
+            String ativoSelecionado = (String) ativo.getSelectedItem();
+            boolean ativoBoolean = ativoSelecionado.equals("SIM");
+
+            // Verificar se houve mudanças nos dados
+            boolean foiModificado = !nomeInput.equals(cliente.getNome()) ||
+                    !telefoneInput.equals(cliente.getTelefone()) ||
+                    ativoBoolean != cliente.getAtivo();
+
+            if (foiModificado) {
+                if (clienteService.editarCliente(nomeInput, telefoneInput, ativoSelecionado, cliente)) {
+                    clienteService.mostrarClientesNaTabela(tableModel);
+                }
+            } else {
+                Faill.show(this, "Nenhuma alteração foi feita!");
+            }
+        });
+    }
+
+    private void eventoFecharJanela() {
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+    }
+
+    private void eventoTeclaESC() {
+        contentPane.registerKeyboardAction((e) -> fecharJanela(),
+                KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+                JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+    }
+
+    private void fecharJanela() {
         dispose();
     }
 
-    private void onCancel() {
-        // add your code here if necessary
-        dispose();
-    }
-
-    public static void main(String[] args) {
-        ClienteAlterar dialog = new ClienteAlterar();
-        dialog.pack();
-        dialog.setVisible(true);
-        System.exit(0);
+    public void setIformacoesCliente() {
+        cpf.setText(cliente.getCpf());
+        nome.setText(cliente.getNome());
+        telefone.setText(cliente.getTelefone());
+        data_cadastro.setText(cliente.getDataCadastro().toString());
+        ativo.setSelectedItem(cliente.getAtivo() ? "SIM" : "NAO");
     }
 }
