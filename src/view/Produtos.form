@@ -129,7 +129,8 @@
                 <constraints/>
                 <properties>
                   <fillsViewportHeight value="false"/>
-                  <font size="18"/>
+                  <font size="20"/>
+                  <rowHeight value="35"/>
                 </properties>
               </component>
             </children>

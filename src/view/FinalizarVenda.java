@@ -1,6 +1,5 @@
 package src.view;
 
-import src.model.Cliente;
 import src.services.VendaItensService;
 import src.services.formatters.ValorParaDinheiro;
 import src.view.customErrors.Faill;
@@ -23,7 +22,7 @@ public class FinalizarVenda extends JDialog {
     private JComboBox<String> metodo_pagamento;
     private JTextField valor_pago;
 
-    public FinalizarVenda(VendaItensService vendaItensService, DefaultTableModel tableModel) {
+    public FinalizarVenda(VendaItensService vendaItensService, DefaultTableModel tableModel, TelaVenda telaVenda) {
         setTitle("Finalizar venda");
         setContentPane(contentPane);
         getRootPane().setDefaultButton(buttonOK);
@@ -31,8 +30,8 @@ public class FinalizarVenda extends JDialog {
         pack();
         setLocationRelativeTo(null);
 
-        total.setText(ValorParaDinheiro.converter(vendaItensService.getSubtotalVendaAtual(), "pt", "BR"));
-        valor_pago.setText(ValorParaDinheiro.converter(vendaItensService.getSubtotalVendaAtual(), "pt", "BR"));
+        total.setText(ValorParaDinheiro.converterSemMoeda(vendaItensService.getSubtotalVendaAtual()));
+        valor_pago.setText(ValorParaDinheiro.converterSemMoeda(vendaItensService.getSubtotalVendaAtual()));
         troco.setText("0.00");
 
         // Define o comportamento do campo valor_pago baseado no método de pagamento
@@ -54,6 +53,7 @@ public class FinalizarVenda extends JDialog {
         buttonOK.addActionListener((e)-> {
             try{
                 vendaItensService.finalizarVenda((String) metodo_pagamento.getSelectedItem(),valor_pago.getText(),vendaItensService.getSubtotalVendaAtual(),tableModel);
+                telaVenda.zerarCampos();
                 this.dispose();
             } catch (IllegalArgumentException ex) {
                 Faill.show(this,ex.getMessage());
@@ -110,6 +110,6 @@ public class FinalizarVenda extends JDialog {
         }
 
         double trocoCalculado = Math.max(0, valorPago - totalVenda);
-        troco.setText(ValorParaDinheiro.converter(trocoCalculado, "pt", "BR"));
+        troco.setText(ValorParaDinheiro.converterSemMoeda(trocoCalculado));
     }
 }

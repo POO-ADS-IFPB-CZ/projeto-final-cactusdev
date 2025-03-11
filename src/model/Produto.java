@@ -59,7 +59,7 @@ public class Produto implements Serializable {
     }
 
     public void setQtdEstoque(double qtdEstoque) {
-        this.qtdEstoque += qtdEstoque;
+        this.qtdEstoque = qtdEstoque;
     }
 
     @Override
