@@ -65,11 +65,35 @@ public class ProdutoAlterar extends JDialog {
                 Faill.show(this, "Nenhuma alteração foi feita!");
             }
         });
+
+        adicionarF2Button.addActionListener((e) -> abrirTelaFornecedor());
+
+        eventoTeclaF2();
+
     }
 
     private void eventoFecharJanela() {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
+
+    private void eventoTeclaF2() {
+        contentPane.registerKeyboardAction((e) -> abrirTelaFornecedor(),
+                KeyStroke.getKeyStroke(KeyEvent.VK_F2, 0),
+                JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+    }
+
+
+    private void abrirTelaFornecedor() {
+        TelaFornecedor telaFornecedor = new TelaFornecedor(true);
+        telaFornecedor.setLocationRelativeTo(this);
+        telaFornecedor.setVisible(true);
+
+        fornecedorSelecionado = telaFornecedor.getFornecedorSelecionado();
+        if (fornecedorSelecionado != null) {
+            input_fornecedor.setText(fornecedorSelecionado.getNome());
+        }
+    }
+
 
     private void eventoTeclaESC() {
         contentPane.registerKeyboardAction((e) -> fecharJanela(),

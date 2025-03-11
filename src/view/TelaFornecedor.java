@@ -9,6 +9,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -57,6 +58,8 @@ public class TelaFornecedor extends JDialog {
 
         alterarFornecedorButton.addActionListener((e) -> abrirEdicaoFornecedor());
 
+        configurarTeclaESC();
+
         KeyAdapter keyAdapter = new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -67,8 +70,6 @@ public class TelaFornecedor extends JDialog {
                         opcao_busca.setSelectedItem("CNPJ");
                     }
                     buscarFornecedores();
-                } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    fecharJanela();
                 } else if (e.getKeyCode() == KeyEvent.VK_F5) {
                     abrirEdicaoFornecedor();
                 }
@@ -102,6 +103,18 @@ public class TelaFornecedor extends JDialog {
             default:
                 Faill.show(this, "Nenhuma opção de busca selecionada");
         }
+    }
+
+    private void configurarTeclaESC() {
+        JRootPane rootPane = this.getRootPane();
+        KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(stroke, "fecharJanela");
+        rootPane.getActionMap().put("fecharJanela", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                fecharJanela();
+            }
+        });
     }
 
     private void verificarIsAlterarProduto(boolean isAlterarProduto) {
